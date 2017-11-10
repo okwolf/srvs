@@ -1,21 +1,12 @@
 #!/usr/bin/env node
 
-const os = require("os");
 const server = require("./server");
 const openBrowser = require("./client/openBrowser");
-
-const buildUrls = ({ port }) => {
-  const interfaces = os.networkInterfaces();
-  const urls = Object.keys(interfaces)
-    .map(name => interfaces[name].find(({ family }) => family === "IPv4"))
-    .filter(interface => interface)
-    .map(({ address }) => `http://${address}:${port}`);
-  return urls;
-};
+const availableUrls = require("./client/availableUrls");
 
 server().then(({ port }) => {
   console.log("\x1b[32m%s\x1b[0m", "Available on:");
-  const urls = buildUrls({ port });
+  const urls = availableUrls({ port });
   urls.forEach(url => {
     console.log("\x1b[36m%s\x1b[0m", `  ${url}`);
   });
