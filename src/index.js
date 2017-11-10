@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-os = require("os");
+const os = require("os");
 const server = require("./server");
 const openBrowser = require("./client/openBrowser");
 
