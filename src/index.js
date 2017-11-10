@@ -4,9 +4,17 @@ const server = require("./server");
 const openBrowser = require("./client/openBrowser");
 const availableUrls = require("./client/availableUrls");
 
-server().then(({ port }) => {
+const options = process.argv
+  .filter(opt => opt.startsWith("--"))
+  .map(opt => opt.substring(2).split("="))
+  .reduce(
+    (otherOpts, [key, value]) => Object.assign(otherOpts, { [key]: value }),
+    {}
+  );
+
+server(options).then(config => {
   console.log("\x1b[32m%s\x1b[0m", "Available on:");
-  const urls = availableUrls({ port });
+  const urls = availableUrls(config);
   urls.forEach(url => {
     console.log("\x1b[36m%s\x1b[0m", `  ${url}`);
   });
