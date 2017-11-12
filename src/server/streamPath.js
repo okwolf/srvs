@@ -33,9 +33,11 @@ module.exports = filePath =>
                     chunk.replace(
                       ES6_IMPORT_REGEX,
                       (match, imports, module) =>
-                        `${imports} "${module.startsWith(".")
-                          ? module
-                          : `https://unpkg.com/${module}?main=module`}"`
+                        `${imports} "${
+                          module.startsWith(".")
+                            ? module
+                            : `https://unpkg.com/${module}?main=module`
+                        }"`
                     )
                   )
                 )

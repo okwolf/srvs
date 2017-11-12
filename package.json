@@ -6,6 +6,9 @@
   "bin": {
     "srvs": "./src/index.js"
   },
+  "scripts": {
+    "format": "npx prettier --write src/**/*.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/okwolf/srvs.git"
