@@ -34,5 +34,5 @@ module.exports = (
             response.end(JSON.stringify(error));
           });
       })
-      .listen({ port }, () => resolve({ port }))
+      .listen({ port }, () => resolve({ port, root, docRoot, scriptRoot }))
   );
