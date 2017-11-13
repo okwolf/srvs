@@ -46,7 +46,8 @@ module.exports = (relativeFolder, filePath) =>
       const fileStream = fs.createReadStream(filePath);
       const contextPath = path
         .dirname(filePath)
-        .substring(relativeFolder.length);
+        .substring(relativeFolder.length)
+        .replace(/\\/g, "/");
       fileStream.on("open", () => {
         resolve({
           fileStream:
