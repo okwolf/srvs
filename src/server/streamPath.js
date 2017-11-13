@@ -21,9 +21,11 @@ const rewriteScript = contextPath =>
       .replace(
         ES6_IMPORT_REGEX,
         (match, imports, module) =>
-          `${imports} "${module.startsWith(".")
-            ? module
-            : `https://unpkg.com/${module}?main=module`}"`
+          `${imports} "${
+            module.startsWith(".")
+              ? module
+              : `https://unpkg.com/${module}?main=module`
+          }"`
       )
       .replace(
         ES6_EXPORT_FROM_REGEX,
