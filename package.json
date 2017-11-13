@@ -1,6 +1,6 @@
 {
   "name": "srvs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Zero Dependency Dev Server",
   "main": "./src/server/index.js",
   "bin": {

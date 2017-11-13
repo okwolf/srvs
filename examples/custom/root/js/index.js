@@ -1,5 +1,5 @@
 import { app } from "hyperapp";
-import H1 from "./components/H1";
+import { H1 } from "./components";
 
 app({
   state: {
