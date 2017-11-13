@@ -1,13 +1,13 @@
 {
   "name": "srvs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Zero Dependency Dev Server",
   "main": "./src/server/index.js",
   "bin": {
     "srvs": "./src/index.js"
   },
   "scripts": {
-    "format": "npx prettier --write src/**/*.js"
+    "format": "npx prettier --write '{src,examples}/**/*.js'"
   },
   "repository": {
     "type": "git",

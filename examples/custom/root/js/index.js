@@ -1,9 +1,4 @@
 import { app } from "hyperapp";
-import { H1 } from "./components";
+import modules from "./modules";
 
-app({
-  state: {
-    message: "hello world"
-  },
-  view: ({ message }) => H1({}, message)
-});
+app(modules);

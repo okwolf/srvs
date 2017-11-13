@@ -23,7 +23,7 @@ const rewriteScript = contextPath =>
         (match, imports, module) =>
           `${imports} "${
             module.startsWith(".")
-              ? module
+              ? `${contextPath}/${module}`
               : `https://unpkg.com/${module}?main=module`
           }"`
       )
@@ -33,7 +33,7 @@ const rewriteScript = contextPath =>
       )
   );
 
-module.exports = (contextPath, filePath) =>
+module.exports = (relativeFolder, filePath) =>
   new Promise((resolve, reject) => {
     fs.lstat(filePath, (err, stats) => {
       if (err) {
@@ -44,6 +44,9 @@ module.exports = (contextPath, filePath) =>
 
       const mime = mimeLookup[path.extname(filePath).toLowerCase()];
       const fileStream = fs.createReadStream(filePath);
+      const contextPath = path
+        .dirname(filePath)
+        .substring(relativeFolder.length);
       fileStream.on("open", () => {
         resolve({
           fileStream:

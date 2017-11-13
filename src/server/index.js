@@ -12,7 +12,7 @@ module.exports = (
     http
       .createServer((request, response) => {
         const streamFromCurrentFolder = (...paths) => () =>
-          streamPath(request.url, path.join(root, ...paths));
+          streamPath(path.join(root, paths[0]), path.join(root, ...paths));
         const resolvedUrl = request.url.endsWith("/")
           ? path.join(request.url, INDEX_HTML_FILE)
           : request.url;
