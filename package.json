@@ -1,7 +1,10 @@
 {
   "name": "srvs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Zero Dependency Dev Server",
+  "files": [
+    "src"
+  ],
   "main": "./src/server/index.js",
   "bin": {
     "srvs": "./src/index.js"
