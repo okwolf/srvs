@@ -14,7 +14,7 @@ const options = process.argv
   );
 
 server(options).then(config => {
-  console.log("\x1b[37m%s\x1b[0m", `SRVS v${version}`);
+  console.log("\x1b[37m%s\x1b[0m", `srvs v${version}`);
   console.log("\x1b[32m%s\x1b[0m", "Available on:");
   const urls = availableUrls(config);
   urls.forEach(url => {

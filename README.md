@@ -1,8 +1,8 @@
-# SRVS - Serves modern webapps for dev, with none of the fat
+# `srvs` serves modern webapps for dev, with none of the fat
 
 [![npm](https://img.shields.io/npm/v/srvs.svg)](https://www.npmjs.org/package/srvs)
 
-SRVS is a zero dependency dev server with support for static content in addition to JavaScript modules hosted from local files and [unpkg.com](https://unpkg.com).
+`srvs` is a zero dependency dev server with support for static content in addition to JavaScript modules hosted from local files and [unpkg.com](https://unpkg.com).
 
 ## Installation
 
@@ -18,12 +18,24 @@ Then you may run with:
 srvs
 ```
 
-### NPX
+### `npx`
 
 No install required, just run:
 
 ```console
 npx srvs
+```
+
+Keep in mind that in order to use `npx` with `Node.js < 8` you need to either install `npx` globally:
+
+```console
+npm i -g npx
+```
+
+or update your version of `npm`:
+
+```console
+npm i -g npm
 ```
 
 ### Local
@@ -34,7 +46,7 @@ Install with npm / Yarn:
 npm i -D srvs
 ```
 
-Then add SRVS to the `scripts` in your `package.json`:
+Then add `srvs` to the `scripts` in your `package.json`:
 
 ```json
 "scripts": {
@@ -69,9 +81,9 @@ npx srvs --port=3000 --root=~/myapp --docRoot=static --scriptRoot=js
 
 ### API
 
-A programmatic way to integrate running SRVS with any existing JavaScript code.
+`srvs` offers a programmatic way to integrate running with existing JavaScript code.
 
-You may bring in the SRVS API function using `import` if you have support for ES6 syntax:
+You may bring in the `srvs` API function using `import` if you have support for ES6 syntax:
 
 ```js
 import srvs from "srvs"
