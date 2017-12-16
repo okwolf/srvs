@@ -1,9 +1,10 @@
 import { app } from "hyperapp";
 import H1 from "./components/H1";
 
-app({
-  state: {
+app(
+  {
     message: "hello world"
   },
-  view: ({ message }) => H1({}, message)
-});
+  ({ message }) => H1({}, message),
+  document.body
+);
