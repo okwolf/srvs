@@ -1,3 +1,4 @@
 import { state, view } from "./main";
 
-export default [state, view];
+const actions = {};
+export default [state, actions, view];
