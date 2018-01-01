@@ -4,7 +4,7 @@ const stream = require("stream");
 const mimeLookup = require("./mimeLookup");
 
 const ES6_IMPORT_REGEX = /(import[\s\S]+?from)\s+?[\'"]([^"\']+)["\']?;?/g;
-const ES6_EXPORT_FROM_REGEX = /(export[\s\S]+?from)\s+?[\'"]([^"\']+)["\']?;?/g;
+const ES6_EXPORT_REGEX = /(export[\s\S]+?from)\s+?[\'"]([^"\']+)["\']?;?/g;
 
 const rewrite = (rewritter = chunk => chunk) =>
   new stream.Transform({
@@ -15,7 +15,7 @@ const rewrite = (rewritter = chunk => chunk) =>
     }
   });
 
-const rewriteScript = contextPath =>
+const rewriteScript = (contextPath, withVersion) =>
   rewrite(chunk =>
     chunk
       .replace(
@@ -24,16 +24,16 @@ const rewriteScript = contextPath =>
           `${imports} "${
             module.startsWith(".")
               ? `${contextPath}/${module}`
-              : `https://unpkg.com/${module}?main=module`
+              : `https://unpkg.com/${withVersion(module)}?main=module`
           }"`
       )
       .replace(
-        ES6_EXPORT_FROM_REGEX,
+        ES6_EXPORT_REGEX,
         (match, exports, module) => `${exports} "${contextPath}/${module}"`
       )
   );
 
-module.exports = (relativeFolder, filePath) =>
+module.exports = (relativeFolder, filePath, dependencies) =>
   new Promise((resolve, reject) => {
     fs.lstat(filePath, (err, stats) => {
       if (err) {
@@ -48,11 +48,13 @@ module.exports = (relativeFolder, filePath) =>
         .dirname(filePath)
         .substring(relativeFolder.length)
         .replace(/\\/g, "/");
+      const withVersion = module =>
+        dependencies[module] ? `${module}@${dependencies[module]}` : module;
       fileStream.on("open", () => {
         resolve({
           fileStream:
             mime === "application/javascript"
-              ? fileStream.pipe(rewriteScript(contextPath))
+              ? fileStream.pipe(rewriteScript(contextPath, withVersion))
               : fileStream,
           mime
         });

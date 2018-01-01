@@ -1,4 +1,4 @@
 import { app } from "hyperapp";
 import modules from "./modules";
 
-app(...modules, document.body);
+app(modules);

@@ -2,7 +2,11 @@
   "name": "srvs-example",
   "version": "0.0.1",
   "private": true,
+  "dependencies": {
+    "hyperapp": "^0.15.0"
+  },
   "scripts": {
-    "start": "node ../../src --port=3000 --root=root --docRoot=static --scriptRoot=js"
+    "start":
+      "node ../../src --port=3000 --root=root --docRoot=static --scriptRoot=js"
   }
 }
