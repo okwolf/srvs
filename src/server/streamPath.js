@@ -51,7 +51,9 @@ module.exports = (relativeFolder, filePath, dependencies) =>
       const withVersion = module =>
         dependencies[module] ? `${module}@${dependencies[module]}` : module;
       fileStream.on("open", () => {
+        const fileName = path.basename(filePath);
         resolve({
+          fileName,
           fileStream:
             mime === "application/javascript"
               ? fileStream.pipe(rewriteScript(contextPath, withVersion))

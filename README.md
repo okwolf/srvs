@@ -72,11 +72,12 @@ Here are the available command line arguments:
 | root       | The path relative to which all other paths will be resolved. The default is the current folder. |         |
 | docRoot    | The relative path from which static assets such as `index.html` will be served.                 | public  |
 | scriptRoot | The relative path from which local JavaScript modules will be served.                           | src     |
+| hot        | Watches for changes in your script files. Listen in your app with `module.hot.accept`.          | false   |
 
 Each argument is passed in the form `--argument=value`. Here is an example using all available arguments:
 
 ```console
-npx srvs --port=3000 --root=~/myapp --docRoot=static --scriptRoot=js
+npx srvs --port=3000 --root=~/myapp --docRoot=static --scriptRoot=js --hot
 ```
 
 ### API

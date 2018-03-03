@@ -1,12 +1,13 @@
 import { app } from "hyperapp";
-import H1 from "./components/H1";
+import moisturize from "hyperapp-moisturize";
+import state from "./state";
+import actions from "./actions";
+import view from "./view";
+import makeHotReloader from "./makeHotReloader";
 
-const state = {
-  message: "hello world"
-};
+const main = moisturize(app)(state, actions, view, document.body);
 
-const actions = {};
-
-const view = ({ message }) => H1({}, message);
-
-app(state, actions, view, document.body);
+const hotReloader = makeHotReloader(main.updateApp);
+hotReloader("state.js", "newState");
+hotReloader("actions.js", "newActions");
+hotReloader("view.js", "newView");

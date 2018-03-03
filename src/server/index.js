@@ -1,9 +1,33 @@
 const http = require("http");
 const path = require("path");
+const fs = require("fs");
 const streamPath = require("./streamPath");
 
 const INDEX_HTML_FILE = "index.html";
 const INDEX_JS_FILE = "index.js";
+const HOT_ENDPOINT = "/hot";
+
+const HOT_SCRIPT = `
+<script>
+const hotHandlers = [];
+window.module = window.module || {};
+window.module.hot = {
+  accept(dependencies, handler) {
+    const hotFilter = !dependencies ? () => true
+      : Array.isArray(dependencies) ? name =>
+        dependencies.some(dependency => dependency === name)
+      : name => dependencies === name;
+    hotHandlers.push([hotFilter, handler]);
+  }
+};
+new EventSource("${HOT_ENDPOINT}").onmessage = message => {
+  hotHandlers.forEach(([filter, handler]) => {
+    if(filter(message.data)) {
+      handler(message.data)
+    }
+  })
+};
+</script>`;
 
 const mapValues = mapper => obj =>
   Object.keys(obj).reduce(
@@ -27,11 +51,28 @@ module.exports = ({
   port = 8080,
   root = "",
   docRoot = "public",
-  scriptRoot = "src"
+  scriptRoot = "src",
+  hot = false
 } = {}) =>
-  new Promise(resolve =>
+  new Promise(resolve => {
+    const clients = [];
+    fs.watch(
+      path.resolve(root, scriptRoot),
+      { recursive: true },
+      (_, fileName) => {
+        clients.forEach(client => {
+          client.write(`data: ./${fileName}\n\n`);
+        });
+      }
+    );
     http
       .createServer((request, response) => {
+        if (hot && request.url === HOT_ENDPOINT) {
+          clients.push(response);
+          return response.writeHead(200, {
+            "Content-Type": "text/event-stream"
+          });
+        }
         const streamFromCurrentFolder = (...paths) => () =>
           streamPath(
             path.join(root, paths[0]),
@@ -44,20 +85,35 @@ module.exports = ({
         streamFromCurrentFolder(scriptRoot, resolvedUrl)()
           .catch(streamFromCurrentFolder(scriptRoot, `${resolvedUrl}.js`))
           .catch(
+            streamFromCurrentFolder(
+              scriptRoot,
+              resolvedUrl.substring(0, resolvedUrl.indexOf("?"))
+            )
+          )
+          .catch(
             streamFromCurrentFolder(scriptRoot, resolvedUrl, INDEX_JS_FILE)
           )
           .catch(streamFromCurrentFolder(docRoot, resolvedUrl))
+          .catch(
+            streamFromCurrentFolder(
+              docRoot,
+              resolvedUrl.substring(0, resolvedUrl.indexOf("?"))
+            )
+          )
           .catch(streamFromCurrentFolder(docRoot, INDEX_HTML_FILE))
-          .then(({ fileStream, mime }) => {
+          .then(({ fileName, fileStream, mime }) => {
             if (mime) {
               response.setHeader("Content-Type", mime);
+            }
+            if (hot && fileName === INDEX_HTML_FILE) {
+              response.write(HOT_SCRIPT);
             }
             fileStream.pipe(response);
           })
           .catch(error => {
-            response.writeHead(404);
+            response.writeHead(500);
             response.end(JSON.stringify(error));
           });
       })
-      .listen({ port }, () => resolve({ port, root, docRoot, scriptRoot }))
-  );
+      .listen({ port }, () => resolve({ port, root, docRoot, scriptRoot }));
+  });
