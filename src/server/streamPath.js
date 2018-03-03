@@ -24,7 +24,7 @@ const rewriteScript = (contextPath, withVersion) =>
           `${imports} "${
             module.startsWith(".")
               ? `${contextPath}/${module}`
-              : `https://unpkg.com/${withVersion(module)}?main=module`
+              : `https://unpkg.com/${withVersion(module)}?module`
           }"`
       )
       .replace(
