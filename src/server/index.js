@@ -23,9 +23,12 @@ const getDependencies = () => {
   return {};
 };
 
-module.exports = (
-  { port = 8080, root = "", docRoot = "public", scriptRoot = "src" } = {}
-) =>
+module.exports = ({
+  port = 8080,
+  root = "",
+  docRoot = "public",
+  scriptRoot = "src"
+} = {}) =>
   new Promise(resolve =>
     http
       .createServer((request, response) => {
