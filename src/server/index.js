@@ -9,24 +9,26 @@ const HOT_ENDPOINT = "/hot";
 
 const HOT_SCRIPT = `
 <script>
-const hotHandlers = [];
-window.module = window.module || {};
-window.module.hot = {
-  accept(dependencies, handler) {
-    const hotFilter = !dependencies ? () => true
-      : Array.isArray(dependencies) ? name =>
-        dependencies.some(dependency => dependency === name)
-      : name => dependencies === name;
-    hotHandlers.push([hotFilter, handler]);
-  }
-};
-new EventSource("${HOT_ENDPOINT}").onmessage = message => {
-  hotHandlers.forEach(([filter, handler]) => {
-    if(filter(message.data)) {
-      handler(message.data)
+{
+  const hotHandlers = [];
+  window.module = window.module || {};
+  window.module.hot = {
+    accept(dependencies, handler) {
+      const hotFilter = !dependencies ? () => true
+        : Array.isArray(dependencies) ? name =>
+          dependencies.some(dependency => dependency === name)
+        : name => dependencies === name;
+      hotHandlers.push([hotFilter, handler]);
     }
-  })
-};
+  };
+  new EventSource("${HOT_ENDPOINT}").onmessage = message => {
+    hotHandlers.forEach(([filter, handler]) => {
+      if(filter(message.data)) {
+        handler(message.data)
+      }
+    })
+  };
+}
 </script>`;
 
 const mapValues = mapper => obj =>
