@@ -14,19 +14,22 @@ const HOT_SCRIPT = `
   window.module = window.module || {};
   window.module.hot = {
     accept(dependencies, handler) {
-      const hotFilter = !dependencies ? () => true
-        : Array.isArray(dependencies) ? name =>
-          dependencies.some(dependency => dependency === name)
-        : name => dependencies === name;
+      const hotFilter = !dependencies
+        ? () => true
+        : Array.isArray(dependencies)
+          ? name => dependencies.some(dependency => dependency === name)
+          : name => dependencies === name;
       hotHandlers.push([hotFilter, handler]);
     }
   };
   new EventSource("${HOT_ENDPOINT}").onmessage = message => {
-    hotHandlers.forEach(([filter, handler]) => {
-      if(filter(message.data)) {
-        handler(message.data)
-      }
-    })
+    const matchingHandlers = hotHandlers.filter(([filter]) =>
+      filter(message.data)
+    );
+    matchingHandlers.forEach(([, handler]) => handler(message.data));
+    if (matchingHandlers.length) {
+      console.log("hot reloading:", message.data);
+    }
   };
 }
 </script>`;
@@ -62,6 +65,7 @@ module.exports = ({
       path.resolve(root, scriptRoot),
       { recursive: true },
       (_, fileName) => {
+        console.log("notifying hot reload clients of modified file:", fileName);
         clients.forEach(client => {
           client.write(`data: ./${fileName}\n\n`);
         });
