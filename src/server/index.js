@@ -2,6 +2,7 @@ const http = require("http");
 const path = require("path");
 const fs = require("fs");
 const streamPath = require("./streamPath");
+const { withRed, withGreen } = require("../colors");
 
 const INDEX_HTML_FILE = "index.html";
 const INDEX_JS_FILE = "index.js";
@@ -28,7 +29,7 @@ const HOT_SCRIPT = `
     );
     matchingHandlers.forEach(([, handler]) => handler(message.data));
     if (matchingHandlers.length) {
-      console.log("hot reloading:", message.data);
+      console.info("hot reloading:", message.data);
     }
   };
 }
@@ -65,7 +66,10 @@ module.exports = ({
       path.resolve(root, scriptRoot),
       { recursive: true },
       (_, fileName) => {
-        console.log("notifying hot reload clients of modified file:", fileName);
+        console.log(
+          "notifying hot reload clients of modified file:",
+          withGreen(fileName)
+        );
         clients.forEach(client => {
           client.write(`data: ./${fileName}\n\n`);
         });
@@ -117,8 +121,9 @@ module.exports = ({
             fileStream.pipe(response);
           })
           .catch(error => {
+            console.error(withRed(error));
             response.writeHead(500);
-            response.end(JSON.stringify(error));
+            response.end(error.toString());
           });
       })
       .listen({ port }, () => resolve({ port, root, docRoot, scriptRoot }));
