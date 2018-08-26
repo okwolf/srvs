@@ -62,19 +62,21 @@ module.exports = ({
 } = {}) =>
   new Promise(resolve => {
     const clients = [];
-    fs.watch(
-      path.resolve(root, scriptRoot),
-      { recursive: true },
-      (_, fileName) => {
-        console.log(
-          "notifying hot reload clients of modified file:",
-          withGreen(fileName)
-        );
-        clients.forEach(client => {
-          client.write(`data: ./${fileName}\n\n`);
-        });
-      }
-    );
+    if (hot) {
+      fs.watch(
+        path.resolve(root, scriptRoot),
+        { recursive: true },
+        (_, fileName) => {
+          console.log(
+            "notifying hot reload clients of modified file:",
+            withGreen(fileName)
+          );
+          clients.forEach(client => {
+            client.write(`data: ./${fileName}\n\n`);
+          });
+        }
+      );
+    }
     http
       .createServer((request, response) => {
         if (hot && request.url === HOT_ENDPOINT) {
