@@ -126,5 +126,7 @@ module.exports = ({
             response.end(error.toString());
           });
       })
-      .listen({ port }, () => resolve({ port, root, docRoot, scriptRoot }));
+      .listen({ port }, () =>
+        resolve({ port, root, docRoot, scriptRoot, hot })
+      );
   });
