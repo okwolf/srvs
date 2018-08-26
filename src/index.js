@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const server = require("./server");
+const { withGreen, withYellow, withCyan, withWhite } = require("./colors");
 const openBrowser = require("./client/openBrowser");
 const availableUrls = require("./client/availableUrls");
 const { version } = require("../package.json");
@@ -14,13 +15,13 @@ const options = process.argv
   );
 
 server(options).then(config => {
-  console.log("\x1b[37m%s\x1b[0m", `srvs v${version}`);
-  console.log("\x1b[32m%s\x1b[0m", "Available on:");
+  console.log(withWhite(`srvs v${version}`));
+  console.log(withGreen("Available on:"));
   const urls = availableUrls(config);
   urls.forEach(url => {
-    console.log("\x1b[36m%s\x1b[0m", `  ${url}`);
+    console.log(withCyan(`  ${url}`));
   });
-  console.log("\x1b[33m%s\x1b[0m", "Hit CTRL-C to stop the server");
+  console.log(withYellow("Hit CTRL-C to stop the server"));
   if (urls.length) {
     openBrowser(urls[0]);
   }

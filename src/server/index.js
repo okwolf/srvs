@@ -1,6 +1,7 @@
 const http = require("http");
 const path = require("path");
 const streamPath = require("./streamPath");
+const { withRed } = require("../colors");
 
 const INDEX_HTML_FILE = "index.html";
 const INDEX_JS_FILE = "index.js";
@@ -55,8 +56,9 @@ module.exports = ({
             fileStream.pipe(response);
           })
           .catch(error => {
-            response.writeHead(404);
-            response.end(JSON.stringify(error));
+            console.error(withRed(error));
+            response.writeHead(500);
+            response.end(error.toString());
           });
       })
       .listen({ port }, () => resolve({ port, root, docRoot, scriptRoot }))
