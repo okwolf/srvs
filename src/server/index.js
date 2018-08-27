@@ -85,34 +85,26 @@ module.exports = ({
             "Content-Type": "text/event-stream"
           });
         }
-        const streamFromCurrentFolder = (...paths) => () =>
-          streamPath(
-            path.join(root, paths[0]),
-            path.join(root, ...paths),
-            getDependencies(root)
-          );
         const resolvedUrl = request.url.endsWith("/")
           ? path.join(request.url, INDEX_HTML_FILE)
           : request.url;
-        streamFromCurrentFolder(scriptRoot, resolvedUrl)()
-          .catch(streamFromCurrentFolder(scriptRoot, `${resolvedUrl}.js`))
-          .catch(
-            streamFromCurrentFolder(
-              scriptRoot,
-              resolvedUrl.substring(0, resolvedUrl.indexOf("?"))
-            )
-          )
-          .catch(
-            streamFromCurrentFolder(scriptRoot, resolvedUrl, INDEX_JS_FILE)
-          )
-          .catch(streamFromCurrentFolder(docRoot, resolvedUrl))
-          .catch(
-            streamFromCurrentFolder(
-              docRoot,
-              resolvedUrl.substring(0, resolvedUrl.indexOf("?"))
-            )
-          )
-          .catch(streamFromCurrentFolder(docRoot, INDEX_HTML_FILE))
+
+        const resolveNodePath = () =>
+          new Promise((resolve, reject) => {
+            try {
+              const urlWithoutQuery = resolvedUrl.split("?").shift();
+              const nodeResolvedPath = require.resolve(`.${urlWithoutQuery}`, {
+                paths: [scriptRoot, docRoot]
+              });
+              resolve(nodeResolvedPath);
+            } catch (error) {
+              process.nextTick(() => reject(error));
+            }
+          });
+
+        resolveNodePath()
+          .then(nodeResolvedPath => streamPath(nodeResolvedPath))
+          .catch(() => streamPath(path.join(docRoot, INDEX_HTML_FILE)))
           .then(({ fileName, fileStream, mime }) => {
             if (mime) {
               response.setHeader("Content-Type", mime);
