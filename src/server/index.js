@@ -5,9 +5,8 @@ const streamPath = require("./streamPath");
 const { withRed, withGreen } = require("../colors");
 
 const INDEX_HTML_FILE = "index.html";
-const INDEX_JS_FILE = "index.js";
-const HOT_ENDPOINT = "/hot";
 
+const HOT_ENDPOINT = "/hot";
 const HOT_SCRIPT = `
 <script type="module">
 {
@@ -35,24 +34,6 @@ const HOT_SCRIPT = `
 }
 </script>`;
 
-const mapValues = mapper => obj =>
-  Object.keys(obj).reduce(
-    (otherValues, key) =>
-      Object.assign(otherValues, { [key]: mapper(obj[key]) }),
-    {}
-  );
-
-const getDependencies = () => {
-  try {
-    const packagePath = path.join(process.cwd(), "package");
-    const packageJson = require(packagePath);
-    return mapValues(version => version.replace(/[~^*>=]/g, ""))(
-      packageJson.dependencies
-    );
-  } catch (e) {}
-  return {};
-};
-
 module.exports = ({
   port = 8080,
   root = "",
@@ -61,21 +42,20 @@ module.exports = ({
   hot = false
 } = {}) =>
   new Promise(resolve => {
+    const rootPath = path.resolve(root);
+    const scriptPath = path.resolve(rootPath, scriptRoot);
+    const docPath = path.resolve(rootPath, docRoot);
     const clients = [];
     if (hot) {
-      fs.watch(
-        path.resolve(root, scriptRoot),
-        { recursive: true },
-        (_, fileName) => {
-          console.log(
-            "notifying hot reload clients of modified file:",
-            withGreen(fileName)
-          );
-          clients.forEach(client => {
-            client.write(`data: ./${fileName}\n\n`);
-          });
-        }
-      );
+      fs.watch(scriptPath, { recursive: true }, (_, fileName) => {
+        console.log(
+          "notifying hot reload clients of modified file:",
+          withGreen(fileName)
+        );
+        clients.forEach(client => {
+          client.write(`data: ./${fileName}\n\n`);
+        });
+      });
     }
     http
       .createServer((request, response) => {
@@ -93,9 +73,9 @@ module.exports = ({
         const resolveNodePath = () =>
           new Promise((resolve, reject) => {
             try {
-              const urlWithoutQuery = resolvedUrl.split("?").shift();
+              const urlWithoutQuery = resolvedUrl.split("?").slice(0, 1);
               const nodeResolvedPath = require.resolve(`.${urlWithoutQuery}`, {
-                paths: [scriptRoot, docRoot]
+                paths: [scriptPath, docPath]
               });
               resolve(nodeResolvedPath);
             } catch (error) {
@@ -104,8 +84,9 @@ module.exports = ({
           });
 
         resolveNodePath()
-          .then(nodeResolvedPath => streamPath(nodeResolvedPath))
-          .catch(() => streamPath(path.join(docRoot, INDEX_HTML_FILE)))
+          .then(nodeResolvedPath => streamPath(nodeResolvedPath, rootPath))
+          .catch(() => streamPath(resolvedUrl, rootPath))
+          .catch(() => streamPath(path.resolve(docPath, INDEX_HTML_FILE)))
           .then(({ fileName, fileStream, mime }) => {
             if (mime) {
               response.setHeader("Content-Type", mime);

@@ -2,7 +2,12 @@
   "name": "srvs-example",
   "version": "0.0.1",
   "private": true,
+  "dependencies": {
+    "hyperapp": "=1.2.8",
+    "hyperapp-moisturize": "=0.1.2"
+  },
   "scripts": {
+    "prestart": "npm i",
     "start": "node ../../src --hot"
   }
 }
