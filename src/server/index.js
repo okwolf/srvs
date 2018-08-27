@@ -9,25 +9,25 @@ const INDEX_JS_FILE = "index.js";
 const HOT_ENDPOINT = "/hot";
 
 const HOT_SCRIPT = `
-<script>
+<script type="module">
 {
   const hotHandlers = [];
   window.module = window.module || {};
   window.module.hot = {
     accept(dependencies, handler) {
-      const hotFilter = !dependencies
+      const filter = !dependencies
         ? () => true
         : Array.isArray(dependencies)
           ? name => dependencies.some(dependency => dependency === name)
           : name => dependencies === name;
-      hotHandlers.push([hotFilter, handler]);
+      hotHandlers.push({ filter, handler });
     }
   };
   new EventSource("${HOT_ENDPOINT}").onmessage = message => {
-    const matchingHandlers = hotHandlers.filter(([filter]) =>
+    const matchingHandlers = hotHandlers.filter(({ filter }) =>
       filter(message.data)
     );
-    matchingHandlers.forEach(([, handler]) => handler(message.data));
+    matchingHandlers.forEach(({ handler }) => handler(message.data));
     if (matchingHandlers.length) {
       console.info("hot reloading:", message.data);
     }
