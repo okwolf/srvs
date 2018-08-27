@@ -80,10 +80,11 @@ module.exports = ({
     http
       .createServer((request, response) => {
         if (hot && request.url === HOT_ENDPOINT) {
-          clients.push(response);
-          return response.writeHead(200, {
+          response.writeHead(200, {
             "Content-Type": "text/event-stream"
           });
+          clients.push(response);
+          return response.write(": hot reload is enabled\n\n");
         }
         const streamFromCurrentFolder = (...paths) => () =>
           streamPath(
