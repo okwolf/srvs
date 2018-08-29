@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "hyperapp": "^0.15.0"
+    "hyperapp": "=0.15.0"
   },
   "scripts": {
-    "start":
-      "node ../../src --port=3000 --root=root --docRoot=static --scriptRoot=js"
+    "prestart": "npm i",
+    "start": "node ../../src --port=3000 --docRoot=static --scriptRoot=js"
   }
 }

@@ -7,10 +7,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Run example",
+      "name": "Hot reload example",
       "program": "${workspaceFolder}/src/index.js",
       "cwd": "${workspaceFolder}/examples/hot",
       "args": ["--hot"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Custom example",
+      "program": "${workspaceFolder}/src/index.js",
+      "cwd": "${workspaceFolder}/examples/custom",
+      "args": ["--port=3000", "--docRoot=static", "--scriptRoot=js"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }

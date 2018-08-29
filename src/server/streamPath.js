@@ -68,17 +68,17 @@ const rewriteScript = ({ searchPath, importContext }) =>
           searchPath
         });
         if (fs.existsSync(installedModulePath)) {
-          return `${imports} "./node_modules/${module}"`;
+          return `${imports} "/node_modules/${module}"`;
         }
         return `${imports} "https://unpkg.com/${moduleName}${
           moduleVersion ? `@${moduleVersion}` : ""
         }?module"`;
       })
-      .replace(ES6_EXPORT_REGEX, (match, exports, module) => {
-        const resolvedRelativeImport = path.resolve(importContext, module);
-        return importContext
-          ? `${exports} ".${resolvedRelativeImport}"`
-          : match;
+      .replace(ES6_EXPORT_REGEX, (_, exports, module) => {
+        const resolvedRelativeImport = importContext
+          ? path.join(importContext, module)
+          : module;
+        return `${exports} ".${resolvedRelativeImport}"`;
       })
   );
 
@@ -124,7 +124,7 @@ const streamModule = ({ importPath, searchPath, resolve, reject }) => {
   });
 };
 
-module.exports = (filePath, searchPath) =>
+module.exports = (filePath, searchPath = "", relativeImportPath = "") =>
   new Promise((resolve, reject) => {
     if (NODE_MODULES_REGEX.test(filePath)) {
       const importPath = filePath.replace(NODE_MODULES_REGEX, "");
@@ -136,7 +136,14 @@ module.exports = (filePath, searchPath) =>
         } else if (stats.isDirectory()) {
           return reject("can't stream a directory");
         }
-        streamFile({ filePath, searchPath, resolve, reject });
+        const resolvedRelativeImport = filePath.substring(
+          relativeImportPath.length
+        );
+        const fullImportContext = path.dirname(resolvedRelativeImport);
+        const importContext = fullImportContext.substring(
+          fullImportContext.lastIndexOf("/")
+        );
+        streamFile({ filePath, searchPath, importContext, resolve, reject });
       });
     }
   });

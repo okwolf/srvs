@@ -36,13 +36,12 @@ const HOT_SCRIPT = `
 
 module.exports = ({
   port = 8080,
-  root = "",
   docRoot = "public",
   scriptRoot = "src",
   hot = false
 } = {}) =>
   new Promise(resolve => {
-    const rootPath = path.resolve(root);
+    const rootPath = process.cwd();
     const scriptPath = path.resolve(rootPath, scriptRoot);
     const docPath = path.resolve(rootPath, docRoot);
     const clients = [];
@@ -84,7 +83,9 @@ module.exports = ({
           });
 
         resolveNodePath()
-          .then(nodeResolvedPath => streamPath(nodeResolvedPath, rootPath))
+          .then(nodeResolvedPath =>
+            streamPath(nodeResolvedPath, rootPath, scriptPath)
+          )
           .catch(() => streamPath(resolvedUrl, rootPath))
           .catch(() => streamPath(path.resolve(docPath, INDEX_HTML_FILE)))
           .then(({ fileName, fileStream, mime }) => {
@@ -102,7 +103,5 @@ module.exports = ({
             response.end(error.toString());
           });
       })
-      .listen({ port }, () =>
-        resolve({ port, root, docRoot, scriptRoot, hot })
-      );
+      .listen({ port }, () => resolve({ port, docRoot, scriptRoot, hot }));
   });
