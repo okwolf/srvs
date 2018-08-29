@@ -16,7 +16,8 @@
     "format": "npx prettier --write '{src,examples,!(node_modules)/}/**/*.js'",
     "format:check": "prettier --list-different '{src,examples,!(node_modules)/}/**/*.js'",
     "lint": "eslint src/**/*.js",
-    "check": "npm run format:check && npm run lint"
+    "check": "npm run format:check && npm run lint",
+    "release": "./pre-flight-tests && npm run check && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
