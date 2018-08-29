@@ -19,22 +19,25 @@ const getImportInfo = ({ importPath, searchPath }) => {
   const moduleVersion = (projectPackage.dependencies || {})[moduleName];
   const installedModulePath = path.resolve(nodeModulesPath, moduleName);
   let resolvedImportPath;
-  try {
-    if (moduleName === importPath) {
+
+  if (moduleName === importPath) {
+    try {
       const modulePackagePath = path.resolve(
         installedModulePath,
         "package.json"
       );
+      delete require.cache[modulePackagePath];
       const { module } = require(modulePackagePath);
       resolvedImportPath = path.resolve(installedModulePath, module);
-    } else {
-      resolvedImportPath = require.resolve(importPath, {
-        paths: [nodeModulesPath]
-      });
+    } catch (e) {
+      // not installed
     }
-  } catch (e) {
-    // ignored
+  } else {
+    resolvedImportPath = require.resolve(importPath, {
+      paths: [nodeModulesPath]
+    });
   }
+
   return {
     moduleName,
     moduleVersion,
