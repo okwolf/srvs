@@ -127,7 +127,7 @@ const streamModule = ({ importPath, searchPath, resolve, reject }) => {
   });
 };
 
-module.exports = (filePath, searchPath = "", relativeImportPath = "") =>
+module.exports = ({ filePath, searchPath = "", relativeImportPath = "" }) =>
   new Promise((resolve, reject) => {
     if (NODE_MODULES_REGEX.test(filePath)) {
       const importPath = filePath.replace(NODE_MODULES_REGEX, "");

@@ -84,10 +84,18 @@ module.exports = ({
 
         resolveNodePath()
           .then(nodeResolvedPath =>
-            streamPath(nodeResolvedPath, rootPath, scriptPath)
+            streamPath({
+              filePath: nodeResolvedPath,
+              searchPath: rootPath,
+              relativeImportPath: scriptPath
+            })
           )
-          .catch(() => streamPath(resolvedUrl, rootPath))
-          .catch(() => streamPath(path.resolve(docPath, INDEX_HTML_FILE)))
+          .catch(() =>
+            streamPath({ filePath: resolvedUrl, searchPath: rootPath })
+          )
+          .catch(() =>
+            streamPath({ filePath: path.resolve(docPath, INDEX_HTML_FILE) })
+          )
           .then(({ fileName, fileStream, mime }) => {
             if (mime) {
               response.setHeader("Content-Type", mime);
