@@ -1,6 +1,6 @@
 {
   "name": "srvs",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "Zero Dependency Dev Server",
   "files": [
     "src"
@@ -9,8 +9,30 @@
   "bin": {
     "srvs": "./src/index.js"
   },
+  "devDependencies": {
+    "eslint": "=5.4.0"
+  },
   "scripts": {
-    "format": "npx prettier --write '{src,examples}/**/*.js'"
+    "format": "npx prettier --write '{src,examples,!(node_modules)/}/**/*.js'",
+    "format:check": "prettier --list-different '{src,examples,!(node_modules)/}/**/*.js'",
+    "lint": "eslint src/**/*.js",
+    "check": "npm run format:check && npm run lint",
+    "release": "./pre-flight-tests && npm run check && git tag $npm_package_version && git push && git push --tags && npm publish"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 9
+    },
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "no-use-before-define": "error"
+    }
   },
   "repository": {
     "type": "git",

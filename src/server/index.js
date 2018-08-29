@@ -5,9 +5,8 @@ const streamPath = require("./streamPath");
 const { withRed, withGreen } = require("../colors");
 
 const INDEX_HTML_FILE = "index.html";
-const INDEX_JS_FILE = "index.js";
-const HOT_ENDPOINT = "/hot";
 
+const HOT_ENDPOINT = "/hot";
 const HOT_SCRIPT = `
 <script type="module">
 {
@@ -35,47 +34,27 @@ const HOT_SCRIPT = `
 }
 </script>`;
 
-const mapValues = mapper => obj =>
-  Object.keys(obj).reduce(
-    (otherValues, key) =>
-      Object.assign(otherValues, { [key]: mapper(obj[key]) }),
-    {}
-  );
-
-const getDependencies = () => {
-  try {
-    const packagePath = path.join(process.cwd(), "package");
-    const packageJson = require(packagePath);
-    return mapValues(version => version.replace(/[~^*>=]/g, ""))(
-      packageJson.dependencies
-    );
-  } catch (e) {}
-  return {};
-};
-
 module.exports = ({
   port = 8080,
-  root = "",
   docRoot = "public",
   scriptRoot = "src",
   hot = false
 } = {}) =>
   new Promise(resolve => {
+    const rootPath = process.cwd();
+    const scriptPath = path.resolve(rootPath, scriptRoot);
+    const docPath = path.resolve(rootPath, docRoot);
     const clients = [];
     if (hot) {
-      fs.watch(
-        path.resolve(root, scriptRoot),
-        { recursive: true },
-        (_, fileName) => {
-          console.log(
-            "notifying hot reload clients of modified file:",
-            withGreen(fileName)
-          );
-          clients.forEach(client => {
-            client.write(`data: ./${fileName}\n\n`);
-          });
-        }
-      );
+      fs.watch(scriptPath, { recursive: true }, (_, fileName) => {
+        console.log(
+          "notifying hot reload clients of modified file:",
+          withGreen(fileName)
+        );
+        clients.forEach(client => {
+          client.write(`data: ./${fileName}\n\n`);
+        });
+      });
     }
     http
       .createServer((request, response) => {
@@ -86,34 +65,37 @@ module.exports = ({
           clients.push(response);
           return response.write(": hot reload is enabled\n\n");
         }
-        const streamFromCurrentFolder = (...paths) => () =>
-          streamPath(
-            path.join(root, paths[0]),
-            path.join(root, ...paths),
-            getDependencies(root)
-          );
         const resolvedUrl = request.url.endsWith("/")
           ? path.join(request.url, INDEX_HTML_FILE)
           : request.url;
-        streamFromCurrentFolder(scriptRoot, resolvedUrl)()
-          .catch(streamFromCurrentFolder(scriptRoot, `${resolvedUrl}.js`))
-          .catch(
-            streamFromCurrentFolder(
-              scriptRoot,
-              resolvedUrl.substring(0, resolvedUrl.indexOf("?"))
-            )
+
+        const resolveNodePath = () =>
+          new Promise((resolve, reject) => {
+            try {
+              const urlWithoutQuery = resolvedUrl.split("?").slice(0, 1);
+              const nodeResolvedPath = require.resolve(`.${urlWithoutQuery}`, {
+                paths: [scriptPath, docPath]
+              });
+              resolve(nodeResolvedPath);
+            } catch (error) {
+              process.nextTick(() => reject(error));
+            }
+          });
+
+        resolveNodePath()
+          .then(nodeResolvedPath =>
+            streamPath({
+              filePath: nodeResolvedPath,
+              searchPath: rootPath,
+              relativeImportPath: scriptPath
+            })
           )
-          .catch(
-            streamFromCurrentFolder(scriptRoot, resolvedUrl, INDEX_JS_FILE)
+          .catch(() =>
+            streamPath({ filePath: resolvedUrl, searchPath: rootPath })
           )
-          .catch(streamFromCurrentFolder(docRoot, resolvedUrl))
-          .catch(
-            streamFromCurrentFolder(
-              docRoot,
-              resolvedUrl.substring(0, resolvedUrl.indexOf("?"))
-            )
+          .catch(() =>
+            streamPath({ filePath: path.resolve(docPath, INDEX_HTML_FILE) })
           )
-          .catch(streamFromCurrentFolder(docRoot, INDEX_HTML_FILE))
           .then(({ fileName, fileStream, mime }) => {
             if (mime) {
               response.setHeader("Content-Type", mime);
@@ -129,7 +111,5 @@ module.exports = ({
             response.end(error.toString());
           });
       })
-      .listen({ port }, () =>
-        resolve({ port, root, docRoot, scriptRoot, hot })
-      );
+      .listen({ port }, () => resolve({ port, docRoot, scriptRoot, hot }));
   });
