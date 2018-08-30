@@ -1,4 +1,4 @@
-# `srvs` serves modern webapps for dev, with none of the fat
+# `srvs` *s*e*rv*e*s* modern webapps for dev, with none of the fat
 
 [![npm](https://img.shields.io/npm/v/srvs.svg)](https://www.npmjs.org/package/srvs)
 
