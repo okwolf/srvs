@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const stream = require("stream");
+const normalizePath = require("../normalizePath");
 const mimeLookup = require("./mimeLookup");
 
 const ES6_IMPORT_REGEX = /(import[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
@@ -79,7 +80,7 @@ const rewriteScript = ({ searchPath, importContext }) =>
       })
       .replace(ES6_EXPORT_REGEX, (_, exports, module) => {
         const resolvedRelativeImport = importContext
-          ? path.join(importContext, module)
+          ? normalizePath(path.join(importContext, module))
           : module;
         return `${exports} ".${resolvedRelativeImport}"`;
       })
@@ -143,8 +144,8 @@ module.exports = ({ filePath, searchPath = "", relativeImportPath = "" }) =>
           relativeImportPath.length
         );
         const fullImportContext = path.dirname(resolvedRelativeImport);
-        const importContext = fullImportContext.substring(
-          fullImportContext.lastIndexOf("/")
+        const importContext = normalizePath(
+          fullImportContext.substring(fullImportContext.lastIndexOf(path.sep))
         );
         streamFile({ filePath, searchPath, importContext, resolve, reject });
       });

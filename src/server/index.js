@@ -1,8 +1,9 @@
 const http = require("http");
 const path = require("path");
 const fs = require("fs");
-const streamPath = require("./streamPath");
 const { withRed, withGreen } = require("../colors");
+const normalizePath = require("../normalizePath");
+const streamPath = require("./streamPath");
 
 const INDEX_HTML_FILE = "index.html";
 
@@ -66,7 +67,7 @@ module.exports = ({
           return response.write(": hot reload is enabled\n\n");
         }
         const resolvedUrl = request.url.endsWith("/")
-          ? path.join(request.url, INDEX_HTML_FILE)
+          ? normalizePath(path.join(request.url, INDEX_HTML_FILE))
           : request.url;
 
         const resolveNodePath = () =>
@@ -82,16 +83,15 @@ module.exports = ({
             }
           });
 
-        resolveNodePath()
-          .then(nodeResolvedPath =>
-            streamPath({
-              filePath: nodeResolvedPath,
-              searchPath: rootPath,
-              relativeImportPath: scriptPath
-            })
-          )
+        streamPath({ filePath: resolvedUrl, searchPath: rootPath })
           .catch(() =>
-            streamPath({ filePath: resolvedUrl, searchPath: rootPath })
+            resolveNodePath().then(nodeResolvedPath =>
+              streamPath({
+                filePath: nodeResolvedPath,
+                searchPath: rootPath,
+                relativeImportPath: scriptPath
+              })
+            )
           )
           .catch(() =>
             streamPath({ filePath: path.resolve(docPath, INDEX_HTML_FILE) })
