@@ -104,3 +104,12 @@ srvs(options).then(config => {
 ```
 
 The `options` object has the same properties and values as the arguments supported by the command line version. The `config` parameter provided to the resolved `Promise` has the same properties as `options`.
+
+## Caveats
+
+- This is only for use as a development tool, please do not use in production.
+- If you intend to use [dynamic import](https://github.com/tc39/proposal-dynamic-import#import) (as the `examples/hot` project does) to hot reload changed modules, be aware this is [not supported by some browsers](https://caniuse.com/#feat=es6-module-dynamic-import).
+
+## License
+
+`srvs` is MIT licensed. See [LICENSE](LICENSE.md).
