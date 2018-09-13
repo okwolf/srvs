@@ -16,7 +16,7 @@
   "scripts": {
     "clean": "npx rimraf coverage node_modules",
     "format": "npx prettier --write '{src,examples,!(node_modules|coverage)/}/**/*.js'",
-    "format:check": "prettier --list-different '{src,examples,!(node_modules|coverage)/}/**/*.js'",
+    "format:check": "npx prettier --list-different '{src,examples,!(node_modules|coverage)/}/**/*.js'",
     "lint": "eslint src/**/*.js",
     "test": "tead --coverage",
     "check": "npm run format:check && npm run lint && npm t",
