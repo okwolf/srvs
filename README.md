@@ -1,5 +1,7 @@
 # `srvs` *s*e*rv*e*s* modern webapps for dev, with none of the fat
 
+[![Build Status](https://travis-ci.org/okwolf/srvs.svg?branch=master)](https://travis-ci.org/okwolf/srvs)
+[![codecov](https://codecov.io/gh/okwolf/srvs/branch/master/graph/badge.svg)](https://codecov.io/gh/okwolf/srvs)
 [![npm](https://img.shields.io/npm/v/srvs.svg)](https://www.npmjs.org/package/srvs)
 
 `srvs` is a zero dependency dev server with support for static content in addition to JavaScript modules hosted from local files and [unpkg.com](https://unpkg.com).
