@@ -1,51 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 const stream = require("stream");
+const getImportInfo = require("./getImportInfo");
+const rewriteImportsAndExports = require("./rewriteImportsAndExports");
 const normalizePath = require("../normalizePath");
 const mimeLookup = require("./mimeLookup");
-
-const ES6_IMPORT_REGEX = /(import[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
-const ES6_EXPORT_REGEX = /(export[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
 const NODE_MODULES_REGEX = /^\/node_modules\//;
-
-const getImportInfo = ({ importPath, searchPath }) => {
-  const nodeModulesPath = path.resolve(searchPath, "node_modules");
-  const moduleName = importPath
-    .split("/")
-    .slice(0, importPath.startsWith("@") ? 2 : 1)
-    .join("/");
-  const projectPackagePath = path.resolve(searchPath, "package.json");
-  delete require.cache[projectPackagePath];
-  const projectPackage = require(projectPackagePath);
-  const moduleVersion = (projectPackage.dependencies || {})[moduleName];
-  const installedModulePath = path.resolve(nodeModulesPath, moduleName);
-  let resolvedImportPath;
-
-  if (moduleName === importPath) {
-    try {
-      const modulePackagePath = path.resolve(
-        installedModulePath,
-        "package.json"
-      );
-      delete require.cache[modulePackagePath];
-      const { module } = require(modulePackagePath);
-      resolvedImportPath = path.resolve(installedModulePath, module);
-    } catch (e) {
-      // not installed
-    }
-  } else {
-    resolvedImportPath = require.resolve(importPath, {
-      paths: [nodeModulesPath]
-    });
-  }
-
-  return {
-    moduleName,
-    moduleVersion,
-    installedModulePath,
-    resolvedImportPath
-  };
-};
 
 const rewrite = (rewritter = chunk => chunk) =>
   new stream.Transform({
@@ -57,33 +17,8 @@ const rewrite = (rewritter = chunk => chunk) =>
   });
 
 const rewriteScript = ({ searchPath, importContext }) =>
-  rewrite(chunk =>
-    chunk
-      .replace(ES6_IMPORT_REGEX, (match, imports, module) => {
-        if (module.startsWith(".")) {
-          return match;
-        }
-        const {
-          moduleName,
-          moduleVersion,
-          installedModulePath
-        } = getImportInfo({
-          importPath: module,
-          searchPath
-        });
-        if (fs.existsSync(installedModulePath)) {
-          return `${imports} "/node_modules/${module}"`;
-        }
-        return `${imports} "https://unpkg.com/${moduleName}${
-          moduleVersion ? `@${moduleVersion}` : ""
-        }?module"`;
-      })
-      .replace(ES6_EXPORT_REGEX, (_, exports, module) => {
-        const resolvedRelativeImport = importContext
-          ? normalizePath(path.join(importContext, module))
-          : module;
-        return `${exports} ".${resolvedRelativeImport}"`;
-      })
+  rewrite(contents =>
+    rewriteImportsAndExports({ contents, searchPath, importContext })
   );
 
 const streamFile = ({

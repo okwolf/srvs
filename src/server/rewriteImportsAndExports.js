@@ -1,0 +1,33 @@
+const path = require("path");
+const getImportInfo = require("./getImportInfo");
+const normalizePath = require("../normalizePath");
+
+const ES6_IMPORT_REGEX = /(import[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
+const ES6_EXPORT_REGEX = /(export[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
+
+module.exports = ({ contents = "", searchPath = "", importContext = "" }) =>
+  contents
+    .replace(ES6_IMPORT_REGEX, (match, imports, module) => {
+      if (module.startsWith(".")) {
+        return match;
+      }
+      const { isInstalled, moduleName, moduleVersion } = getImportInfo({
+        importPath: module,
+        searchPath
+      });
+      if (isInstalled) {
+        return `${imports} "/node_modules/${module}"`;
+      }
+      return `${imports} "https://unpkg.com/${moduleName}${
+        moduleVersion ? `@${moduleVersion}` : ""
+      }?module"`;
+    })
+    .replace(ES6_EXPORT_REGEX, (_, exports, module) => {
+      const resolvedRelativeImport =
+        (importContext && path.dirname(module) !== ".") ||
+        !path.basename(module).includes(".")
+          ? normalizePath(path.join(importContext, module))
+          : module;
+      const importPrefix = resolvedRelativeImport.startsWith(".") ? "" : ".";
+      return `${exports} "${importPrefix}${resolvedRelativeImport}"`;
+    });
