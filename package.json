@@ -10,15 +10,14 @@
     "srvs": "./src/index.js"
   },
   "devDependencies": {
-    "eslint": "=5.4.0",
-    "tead": "=0.5.0"
+    "eslint": "=5.4.0"
   },
   "scripts": {
     "clean": "npx rimraf coverage node_modules",
     "format": "npx prettier --write '{src,examples,!(node_modules|coverage)/}/**/*.js'",
     "format:check": "npx prettier --list-different '{src,examples,!(node_modules|coverage)/}/**/*.js'",
     "lint": "eslint src/**/*.js",
-    "test": "tead --coverage",
+    "test": "npx tead --coverage",
     "check": "npm run format:check && npm run lint && npm t",
     "prepare": "npm run check",
     "release": "./pre-flight-tests && npm run clean && npm i && git tag $npm_package_version && git push && git push --tags && npm publish"
