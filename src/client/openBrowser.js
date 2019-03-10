@@ -1,6 +1,6 @@
 const childProcess = require("child_process");
 
-const { BROWSER } = process.env;
+const { BROWSER = "" } = process.env;
 
 module.exports = url => {
   let cmd;
