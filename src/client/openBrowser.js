@@ -1,10 +1,16 @@
 const childProcess = require("child_process");
 
+const { BROWSER } = process.env;
+
 module.exports = url => {
   let cmd;
   const args = [];
 
-  if (process.platform === "darwin") {
+  if (BROWSER.toLowerCase() === "none") {
+    return false;
+  } else if (BROWSER) {
+    cmd = BROWSER;
+  } else if (process.platform === "darwin") {
     try {
       // Try our best to reuse existing tab
       // on OS X Google Chrome with AppleScript
