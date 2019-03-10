@@ -30,6 +30,8 @@ const HOT_SCRIPT = `
     matchingHandlers.forEach(({ handler }) => handler(message.data));
     if (matchingHandlers.length) {
       console.info("hot reloading:", message.data);
+    } else {
+      location.reload(true);
     }
   };
 }
@@ -45,17 +47,19 @@ module.exports = ({
     const rootPath = process.cwd();
     const scriptPath = path.resolve(rootPath, scriptRoot);
     const docPath = path.resolve(rootPath, docRoot);
-    const clients = [];
+    const hotClients = [];
     if (hot) {
-      fs.watch(scriptPath, { recursive: true }, (_, fileName) => {
+      const notifyHotClients = (_, fileName) => {
         console.log(
           "notifying hot reload clients of modified file:",
           withGreen(fileName)
         );
-        clients.forEach(client => {
+        hotClients.forEach(client => {
           client.write(`data: ./${fileName}\n\n`);
         });
-      });
+      };
+      fs.watch(scriptPath, { recursive: true }, notifyHotClients);
+      fs.watch(docPath, { recursive: true }, notifyHotClients);
     }
     http
       .createServer((request, response) => {
@@ -63,7 +67,7 @@ module.exports = ({
           response.writeHead(200, {
             "Content-Type": "text/event-stream"
           });
-          clients.push(response);
+          hotClients.push(response);
           return response.write(": hot reload is enabled\n\n");
         }
         const resolvedUrl = request.url.endsWith("/")
