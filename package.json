@@ -20,7 +20,8 @@
     "test": "npx tead --coverage",
     "check": "npm run format:check && npm run lint && npm t",
     "prepare": "npm run check",
-    "release": "./pre-flight-tests && npm run clean && npm i && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "./pre-flight-tests && npm run clean && npm i && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "start": "cd examples/default && npm start"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
