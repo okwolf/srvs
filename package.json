@@ -1,7 +1,7 @@
 {
   "name": "srvs",
-  "version": "0.4.1",
-  "description": "Zero Dependency Dev Server",
+  "version": "0.5.0",
+  "description": "Zero dependency dev derver",
   "files": [
     "src"
   ],

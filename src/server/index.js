@@ -44,8 +44,12 @@ module.exports = ({
 } = {}) =>
   new Promise(resolve => {
     const rootPath = process.cwd();
-    const scriptPath = path.resolve(rootPath, scriptRoot);
-    const docPath = path.resolve(rootPath, docRoot);
+    const scriptPath = fs.existsSync(path.resolve(rootPath, scriptRoot))
+      ? path.resolve(rootPath, scriptRoot)
+      : rootPath;
+    const docPath = fs.existsSync(path.resolve(rootPath, docRoot))
+      ? path.resolve(rootPath, docRoot)
+      : rootPath;
     const hotClients = [];
     const notifyHotClients = (_, fileName) => {
       console.log(

@@ -109,6 +109,7 @@ The `options` object has the same properties and values as the arguments support
 ## Notes
 
 - This is only for use as a development tool, please do not use in production.
+- The `docRoot` and `scriptRoot` options will fall back to the current directory if they don't exist.
 - If you intend to use [dynamic import](https://github.com/tc39/proposal-dynamic-import#import) (as the `examples/hot` project does) to hot reload changed modules, be aware this is [not supported by some browsers](https://caniuse.com/#feat=es6-module-dynamic-import).
 - The `BROWSER` environment variable can be used to control which application to open your page in, or set to `none` to disable browser opening entirely. This feature is inspired by the popular [`create-react-app`](https://facebook.github.io/create-react-app/docs/advanced-configuration).
 
