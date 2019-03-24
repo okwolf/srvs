@@ -40,30 +40,27 @@ const HOT_SCRIPT = `
 module.exports = ({
   port = 8080,
   docRoot = "public",
-  scriptRoot = "src",
-  hot = false
+  scriptRoot = "src"
 } = {}) =>
   new Promise(resolve => {
     const rootPath = process.cwd();
     const scriptPath = path.resolve(rootPath, scriptRoot);
     const docPath = path.resolve(rootPath, docRoot);
     const hotClients = [];
-    if (hot) {
-      const notifyHotClients = (_, fileName) => {
-        console.log(
-          "notifying hot reload clients of modified file:",
-          withGreen(fileName)
-        );
-        hotClients.forEach(client => {
-          client.write(`data: ./${fileName}\n\n`);
-        });
-      };
-      fs.watch(scriptPath, { recursive: true }, notifyHotClients);
-      fs.watch(docPath, { recursive: true }, notifyHotClients);
-    }
+    const notifyHotClients = (_, fileName) => {
+      console.log(
+        "notifying hot reload clients of modified file:",
+        withGreen(fileName)
+      );
+      hotClients.forEach(client => {
+        client.write(`data: ./${fileName}\n\n`);
+      });
+    };
+    fs.watch(scriptPath, { recursive: true }, notifyHotClients);
+    fs.watch(docPath, { recursive: true }, notifyHotClients);
     http
       .createServer((request, response) => {
-        if (hot && request.url === HOT_ENDPOINT) {
+        if (request.url === HOT_ENDPOINT) {
           response.writeHead(200, {
             "Content-Type": "text/event-stream"
           });
@@ -104,7 +101,7 @@ module.exports = ({
             if (mime) {
               response.setHeader("Content-Type", mime);
             }
-            if (hot && fileName === INDEX_HTML_FILE) {
+            if (fileName === INDEX_HTML_FILE) {
               response.write(HOT_SCRIPT);
             }
             fileStream.pipe(response);
@@ -115,5 +112,5 @@ module.exports = ({
             response.end(error.toString());
           });
       })
-      .listen({ port }, () => resolve({ port, docRoot, scriptRoot, hot }));
+      .listen({ port }, () => resolve({ port, docRoot, scriptRoot }));
   });

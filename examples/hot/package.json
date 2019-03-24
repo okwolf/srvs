@@ -8,6 +8,6 @@
   },
   "scripts": {
     "prestart": "npm i",
-    "start": "node ../../src --hot"
+    "start": "node ../../src"
   }
 }

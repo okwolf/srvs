@@ -68,17 +68,16 @@ npm start
 
 Here are the available command line arguments:
 
-| Argument   | Usage                                                                                  | Default |
-| ---------- | -------------------------------------------------------------------------------------- | ------- |
-| port       | The port on which the dev server will listen.                                          | 8080    |
-| docRoot    | The relative path from which static assets such as `index.html` will be served.        | public  |
-| scriptRoot | The relative path from which local JavaScript modules will be served.                  | src     |
-| hot        | Watches for changes in your script files. Listen in your app with `module.hot.accept`. | false   |
+| Argument   | Usage                                                                           | Default |
+| ---------- | ------------------------------------------------------------------------------- | ------- |
+| port       | The port on which the dev server will listen.                                   | 8080    |
+| docRoot    | The relative path from which static assets such as `index.html` will be served. | public  |
+| scriptRoot | The relative path from which local JavaScript modules will be served.           | src     |
 
 Each argument is passed in the form `--argument=value`. Here is an example using all available arguments:
 
 ```console
-npx srvs --port=3000 --root=~/myapp --docRoot=static --scriptRoot=js --hot
+npx srvs --port=3000 --root=~/myapp --docRoot=static --scriptRoot=js
 ```
 
 ### API
