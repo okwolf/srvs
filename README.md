@@ -1,4 +1,4 @@
-# `srvs` *s*e*rv*e*s* modern webapps for dev, with none of the fat
+# `srvs` `s`e`rv`e`s` modern webapps for dev, with none of the fat
 
 [![Build Status](https://travis-ci.org/okwolf/srvs.svg?branch=master)](https://travis-ci.org/okwolf/srvs)
 [![codecov](https://codecov.io/gh/okwolf/srvs/branch/master/graph/badge.svg)](https://codecov.io/gh/okwolf/srvs)
@@ -28,17 +28,7 @@ No install required, just run:
 npx srvs
 ```
 
-Keep in mind that in order to use `npx` with `Node.js < 8` you need to either install `npx` globally:
-
-```console
-npm i -g npx
-```
-
-or update your version of `npm`:
-
-```console
-npm i -g npm
-```
+([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher.)
 
 ### Local
 
@@ -77,7 +67,7 @@ Here are the available command line arguments:
 Each argument is passed in the form `--argument=value`. Here is an example using all available arguments:
 
 ```console
-npx srvs --port=3000 --root=~/myapp --docRoot=static --scriptRoot=js
+npx srvs --port=3000 --docRoot=static --scriptRoot=js
 ```
 
 ### API
