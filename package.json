@@ -10,7 +10,7 @@
     "srvs": "./src/index.js"
   },
   "devDependencies": {
-    "eslint": "=5.4.0"
+    "eslint": "=5.15.3"
   },
   "scripts": {
     "clean": "npx rimraf coverage node_modules",
