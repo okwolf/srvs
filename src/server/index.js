@@ -68,6 +68,11 @@ module.exports = ({
           response.writeHead(200, {
             "Content-Type": "text/event-stream"
           });
+          console.log(withGreen("client connected"));
+          response.on("close", () => {
+            console.log(withRed("client disconnected"));
+            hotClients.splice(hotClients.indexOf(response), 1);
+          });
           hotClients.push(response);
           return response.write(": hot reload is enabled\n\n");
         }
