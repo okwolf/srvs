@@ -1,0 +1,13 @@
+{
+  "name": "srvs-example",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "prestart": "npm i",
+    "start": "node ../../src"
+  },
+  "dependencies": {
+    "es-react": "=16.8.30",
+    "htm": "=2.1.1"
+  }
+}

@@ -45,19 +45,13 @@ const streamFile = ({
 };
 
 const streamModule = ({ importPath, searchPath, resolve, reject }) => {
-  const { resolvedImportPath, installedModulePath } = getImportInfo({
+  const { resolvedImportPath } = getImportInfo({
     importPath,
     searchPath
   });
-  const installedModuleParentPath = path.dirname(installedModulePath);
-  const resolvedRelativeImport = resolvedImportPath.substring(
-    installedModuleParentPath.length
-  );
-  const importContext = path.dirname(resolvedRelativeImport);
   streamFile({
     filePath: resolvedImportPath,
     searchPath,
-    importContext,
     resolve,
     reject
   });

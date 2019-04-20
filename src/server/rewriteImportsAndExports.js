@@ -11,12 +11,20 @@ module.exports = ({ contents = "", searchPath = "", importContext = "" }) =>
       if (module.startsWith(".")) {
         return match;
       }
-      const { isInstalled, moduleName, moduleVersion } = getImportInfo({
+      const {
+        isInstalled,
+        moduleName,
+        moduleVersion,
+        relativeModulePath
+      } = getImportInfo({
         importPath: module,
         searchPath
       });
       if (isInstalled) {
-        return `${imports} "/node_modules/${module}"`;
+        return `${imports} "/node_modules/${path.join(
+          module,
+          relativeModulePath
+        )}"`;
       }
       return `${imports} "https://unpkg.com/${moduleName}${
         moduleVersion ? `@${moduleVersion}` : ""
@@ -28,6 +36,6 @@ module.exports = ({ contents = "", searchPath = "", importContext = "" }) =>
         !path.basename(module).includes(".")
           ? normalizePath(path.join(importContext, module))
           : module;
-      const importPrefix = resolvedRelativeImport.startsWith(".") ? "" : ".";
+      const importPrefix = resolvedRelativeImport.startsWith(".") ? "" : "./";
       return `${exports} "${importPrefix}${resolvedRelativeImport}"`;
     });

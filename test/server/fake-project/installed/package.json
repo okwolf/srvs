@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "fake-package": "1.0.0"
+    "@fake/package": "1.0.0",
+    "fake-package": "1.0.0",
+    "main-package": "1.0.0",
+    "module-package": "1.0.0"
   }
 }

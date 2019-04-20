@@ -13,6 +13,7 @@ module.exports = ({ importPath, searchPath }) => {
   const moduleVersion = (projectPackage.dependencies || {})[moduleName];
   const installedModulePath = path.resolve(nodeModulesPath, moduleName);
   const isInstalled = fs.existsSync(installedModulePath);
+  let relativeModulePath = "";
   let resolvedImportPath;
 
   if (moduleName === importPath) {
@@ -22,8 +23,12 @@ module.exports = ({ importPath, searchPath }) => {
         "package.json"
       );
       delete require.cache[modulePackagePath];
-      const { module } = require(modulePackagePath);
-      resolvedImportPath = path.resolve(installedModulePath, module);
+      const { module, main } = require(modulePackagePath);
+      relativeModulePath = module || main || "";
+      resolvedImportPath = path.resolve(
+        installedModulePath,
+        relativeModulePath
+      );
     } catch (e) {
       // not installed
     }
@@ -37,6 +42,7 @@ module.exports = ({ importPath, searchPath }) => {
     moduleName,
     moduleVersion,
     installedModulePath,
+    relativeModulePath,
     resolvedImportPath,
     isInstalled
   };
