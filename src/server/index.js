@@ -106,11 +106,11 @@ module.exports = ({
           .catch(() =>
             streamPath({ filePath: path.resolve(docPath, INDEX_HTML_FILE) })
           )
-          .then(({ fileName, fileStream, mime }) => {
+          .then(({ fileStream, mime }) => {
             if (mime) {
               response.setHeader("Content-Type", mime);
             }
-            if (fileName === INDEX_HTML_FILE) {
+            if (mime === "text/html") {
               response.write(HOT_SCRIPT);
             }
             fileStream.pipe(response);
