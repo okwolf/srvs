@@ -8,6 +8,8 @@ const streamPath = require("./streamPath");
 const INDEX_HTML_FILE = "index.html";
 
 const HOT_ENDPOINT = "/hot";
+const HOT_KEEPALIVE_INTERVAL = 30000;
+const HOT_DEBOUNCE = 10;
 const HOT_SCRIPT = `
 <script type="module">
 {
@@ -51,15 +53,29 @@ module.exports = ({
       ? path.resolve(rootPath, docRoot)
       : rootPath;
     const hotClients = [];
+    const notifyFileNames = new Set();
+    let notifyTimeout;
     const notifyHotClients = (_, fileName) => {
-      console.log(
-        "notifying hot reload clients of modified file:",
-        withGreen(fileName)
-      );
-      hotClients.forEach(client => {
-        client.write(`data: ./${fileName}\n\n`);
-      });
+      clearTimeout(notifyTimeout);
+      notifyFileNames.add(fileName);
+      notifyTimeout = setTimeout(() => {
+        for (const fileName of notifyFileNames) {
+          console.log(
+            "notifying hot reload clients of modified file:",
+            withGreen(fileName)
+          );
+          hotClients.forEach(client => {
+            client.write(`data: ./${fileName}\n\n`);
+          });
+        }
+        notifyFileNames.clear();
+      }, HOT_DEBOUNCE);
     };
+    setInterval(() => {
+      hotClients.forEach(client => {
+        client.write(": staying alive\n\n");
+      });
+    }, HOT_KEEPALIVE_INTERVAL);
     fs.watch(scriptPath, { recursive: true }, notifyHotClients);
     fs.watch(docPath, { recursive: true }, notifyHotClients);
     http

@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-// eslint-disable-next-line no-undef
 const { execSync } = require("child_process");
 const exec = command => execSync(command, { encoding: "utf8" }).trim();
 
@@ -18,3 +15,12 @@ const workingCopyChanges = exec("git status --porcelain");
 if (workingCopyChanges) {
   exitWithError("please commit your changes before making a release!");
 }
+
+execSync(
+  `npm run release:dry && git tag ${process.env.npm_package_version} && git push && git push --tags && npm publish`,
+  {
+    shell: true,
+    stdio: "inherit",
+    cwd: __dirname
+  }
+);

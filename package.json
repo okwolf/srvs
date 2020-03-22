@@ -10,19 +10,23 @@
     "srvs": "./src/index.js"
   },
   "devDependencies": {
-    "eslint": "=5.16.0",
-    "tead": "=0.5.1"
+    "eslint": "=7.3.1",
+    "tead": "=0.5.3"
   },
   "scripts": {
-    "clean": "npx rimraf coverage node_modules",
-    "format": "npx prettier --write '{src,examples,!(node_modules|coverage)/}/**/*.js'",
-    "format:check": "npx prettier --list-different '{src,examples,!(node_modules|coverage)/}/**/*.js'",
+    "clean": "npx --ignore-existing --quiet rimraf coverage node_modules",
+    "format": "npx prettier --write \"{src,examples,!(node_modules|coverage)/}/**/*.js\"",
+    "format:check": "npx prettier --list-different \"{src,examples,!(node_modules|coverage)/}/**/*.js\"",
     "lint": "eslint src/**/*.js",
     "test": "tead --coverage",
+    "start": "node examples/start",
     "check": "npm run format:check && npm run lint && npm t",
-    "prepare": "npm run check",
-    "release": "./pre-flight-tests && npm run clean && npm i && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "start": "cd examples/default && npm start"
+    "release:dry": "npm run clean && npm i && npm run check",
+    "release": "node release"
+  },
+  "prettier": {
+    "trailingComma": "none",
+    "arrowParens": "avoid"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",

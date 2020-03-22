@@ -7,7 +7,7 @@
     "start": "node ../../src"
   },
   "dependencies": {
-    "es-react": "=16.8.30",
-    "htm": "=2.1.1"
+    "es-react": "=16.13.1",
+    "htm": "=3.0.4"
   }
 }
