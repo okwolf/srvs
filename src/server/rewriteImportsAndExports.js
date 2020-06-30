@@ -21,10 +21,10 @@ module.exports = ({ contents = "", searchPath = "", importContext = "" }) =>
         searchPath
       });
       if (isInstalled) {
-        return `${imports} "/node_modules/${path.join(
-          module,
-          relativeModulePath
-        )}"`;
+        const moduleImportPath = normalizePath(
+          path.join("/node_modules", module, relativeModulePath)
+        );
+        return `${imports} "${moduleImportPath}"`;
       }
       return `${imports} "https://unpkg.com/${moduleName}${
         moduleVersion ? `@${moduleVersion}` : ""

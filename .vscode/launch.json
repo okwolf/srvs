@@ -38,7 +38,7 @@
       "type": "node",
       "request": "launch",
       "name": "Tests",
-      "program": "${workspaceFolder}/node_modules/.bin/tead",
+      "program": "${workspaceFolder}/node_modules/tead/src/tead.js",
       "args": ["--watch"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"

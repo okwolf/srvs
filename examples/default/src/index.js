@@ -5,8 +5,6 @@ const state = {
   message: "hello world"
 };
 
-const actions = {};
-
 const view = ({ message }) => H1({}, message);
 
-app(state, actions, view, document.body);
+app({ init: () => state, view, node: document.body });
