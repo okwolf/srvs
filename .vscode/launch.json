@@ -30,7 +30,17 @@
       "name": "Hot reload example",
       "program": "${workspaceFolder}/src/index.js",
       "cwd": "${workspaceFolder}/examples/hot",
-      "args": ["--hot"],
+      "args": [],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Env example",
+      "program": "${workspaceFolder}/src/index.js",
+      "cwd": "${workspaceFolder}/examples/env",
+      "args": [],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
