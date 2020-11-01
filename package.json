@@ -15,8 +15,8 @@
   },
   "scripts": {
     "clean": "npx --ignore-existing --quiet rimraf coverage node_modules",
-    "format": "npx prettier --write \"{src,examples,!(node_modules|coverage)/}/**/*.js\"",
-    "format:check": "npx prettier --list-different \"{src,examples,!(node_modules|coverage)/}/**/*.js\"",
+    "format": "npx prettier --write \"{src,examples,!(node_modules|coverage)/}/**/*.{js,css,html}\"",
+    "format:check": "npx prettier --list-different \"{src,examples,!(node_modules|coverage)/}/**/*.{js,css,html}\"",
     "lint": "eslint src/**/*.js",
     "test": "tead --coverage",
     "start": "node examples/start",

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "hyperapp": "=0.15.0"
+    "es-react": "=16.13.1",
+    "htm": "=3.0.4"
   },
   "scripts": {
     "prestart": "npm i",

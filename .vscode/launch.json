@@ -7,10 +7,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Hot reload example",
+      "name": "Default example",
       "program": "${workspaceFolder}/src/index.js",
-      "cwd": "${workspaceFolder}/examples/hot",
-      "args": ["--hot"],
+      "cwd": "${workspaceFolder}/examples/default",
+      "args": [],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
@@ -27,10 +27,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "React example",
+      "name": "Hot reload example",
       "program": "${workspaceFolder}/src/index.js",
-      "cwd": "${workspaceFolder}/examples/react",
-      "args": [],
+      "cwd": "${workspaceFolder}/examples/hot",
+      "args": ["--hot"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
