@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
 const server = require("./server");
 const { withGreen, withYellow, withCyan, withWhite } = require("./colors");
 const openBrowser = require("./client/openBrowser");

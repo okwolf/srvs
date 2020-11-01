@@ -10,7 +10,7 @@ const INDEX_HTML_FILE = "index.html";
 const HOT_ENDPOINT = "/hot";
 const HOT_KEEPALIVE_INTERVAL = 30000;
 const HOT_DEBOUNCE = 10;
-const HOT_SCRIPT = `
+const INJECTED_SCRIPT = `
 <script type="module">
 {
   const hotHandlers = [];
@@ -36,6 +36,8 @@ const HOT_SCRIPT = `
       location.reload(true);
     }
   };
+  window.process = {};
+  process.env = ${JSON.stringify(process.env)};
 }
 </script>`;
 
@@ -127,7 +129,7 @@ module.exports = ({
               response.setHeader("Content-Type", mime);
             }
             if (mime === "text/html") {
-              response.write(HOT_SCRIPT);
+              response.write(INJECTED_SCRIPT);
             }
             fileStream.pipe(response);
           })
