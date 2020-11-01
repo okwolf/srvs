@@ -10,6 +10,7 @@ import availableUrls from "./client/availableUrls.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 const options = process.argv
   .filter(opt => opt.startsWith("--"))
