@@ -1,5 +1,10 @@
-const { execSync } = require("child_process");
-const { version } = require("./package");
+import { execSync } from "child_process";
+import packageJson from "./package.json" with { type: "json" };
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const exec = command => execSync(command, { encoding: "utf8" }).trim();
 
 const exitWithError = error => {
@@ -17,13 +22,13 @@ if (workingCopyChanges) {
   exitWithError("please commit your changes before making a release!");
 }
 
-const tagExists = exec(`git tag -l "${version}"`);
+const tagExists = exec(`git tag -l "${packageJson.version}"`);
 if (tagExists) {
-  exitWithError(`${version} has already been released!`);
+  exitWithError(`${packageJson.version} has already been released!`);
 }
 
 execSync(
-  `npm run release:dry && git tag ${version} && git push && git push --tags && npm publish`,
+  `npm run release:dry && git tag ${packageJson.version} && git push && git push --tags && npm publish`,
   {
     shell: true,
     stdio: "inherit",

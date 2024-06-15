@@ -1,5 +1,9 @@
-const path = require("path");
-const { execSync } = require("child_process");
+import path from "path";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const name = process.argv[2] || "default";
 
