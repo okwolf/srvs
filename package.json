@@ -9,14 +9,16 @@
   "bin": {
     "srvs": "./src/index.js"
   },
+  "type": "module",
   "devDependencies": {
-    "eslint": "=7.12.1",
-    "tead": "=0.5.3"
+    "eslint": "=9.5.0",
+    "prettier": "=3.3.2",
+    "tead": "=0.7.0"
   },
   "scripts": {
-    "clean": "npx --ignore-existing --quiet rimraf coverage node_modules",
-    "format": "npx prettier --write \"{src,examples,!(node_modules|coverage)/}/**/*.{js,css,html}\"",
-    "format:check": "npx prettier --list-different \"{src,examples,!(node_modules|coverage)/}/**/*.{js,css,html}\"",
+    "clean": "npx --yes --quiet rimraf coverage node_modules",
+    "format": "prettier --write \"**/*.{js,css,html}\"",
+    "format:check": "prettier --list-different \"**/*.{js,css,html}\"",
     "lint": "eslint src/**/*.js",
     "test": "tead --coverage",
     "start": "node examples/start",
@@ -27,17 +29,6 @@
   "prettier": {
     "trailingComma": "none",
     "arrowParens": "avoid"
-  },
-  "eslintConfig": {
-    "extends": "eslint:recommended",
-    "env": {
-      "node": true,
-      "es6": true
-    },
-    "rules": {
-      "no-console": "off",
-      "no-use-before-define": "error"
-    }
   },
   "repository": {
     "type": "git",

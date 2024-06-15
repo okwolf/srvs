@@ -1,6 +1,6 @@
 # `srvs` `s`e`rv`e`s` modern webapps for dev, with none of the fat
 
-[![Build Status](https://travis-ci.org/okwolf/srvs.svg?branch=master)](https://travis-ci.org/okwolf/srvs)
+[![Build Status](https://github.com/okwolf/srvs/actions/workflows/ci.yml/badge.svg)](https://github.com/okwolf/srvs/actions)
 [![codecov](https://codecov.io/gh/okwolf/srvs/branch/master/graph/badge.svg)](https://codecov.io/gh/okwolf/srvs)
 [![npm](https://img.shields.io/npm/v/srvs.svg)](https://www.npmjs.org/package/srvs)
 
@@ -100,7 +100,6 @@ The `options` object has the same properties and values as the arguments support
 
 - This is only for use as a development tool, please do not use in production.
 - The `docRoot` and `scriptRoot` options will fall back to the current directory if they don't exist.
-- If you intend to use [dynamic import](https://github.com/tc39/proposal-dynamic-import#import) (as the `examples/hot` project does) to hot reload changed modules, be aware this is [not supported by some browsers](https://caniuse.com/#feat=es6-module-dynamic-import).
 - The `BROWSER` environment variable can be used to control which application to open your page in, or set to `none` to disable browser opening entirely. This feature is inspired by the popular [`create-react-app`](https://facebook.github.io/create-react-app/docs/advanced-configuration).
 
 ## License

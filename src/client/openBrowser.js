@@ -1,8 +1,8 @@
-const childProcess = require("child_process");
+import childProcess from "child_process";
 
 const { BROWSER = "" } = process.env;
 
-module.exports = url => {
+export default url => {
   let cmd;
   const args = [];
 
@@ -22,7 +22,8 @@ module.exports = url => {
         }
       );
       return true;
-    } catch (err) {
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
       // Ignore errors.
     }
     cmd = "open";

@@ -1,10 +1,10 @@
-const os = require("os");
+import os from "os";
 
-module.exports = ({ port }) => {
+export default ({ port }) => {
   const interfaces = os.networkInterfaces();
   const urls = Object.keys(interfaces)
     .map(name => interfaces[name].find(({ family }) => family === "IPv4"))
-    .filter(interface => interface)
+    .filter(i => i)
     .map(({ address }) => `http://${address}:${port}`);
   return urls;
 };

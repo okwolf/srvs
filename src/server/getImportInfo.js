@@ -1,15 +1,18 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { createRequire } from "node:module";
 
-module.exports = ({ importPath, searchPath }) => {
+const require = createRequire(import.meta.url);
+
+export default ({ importPath, searchPath }) => {
   const nodeModulesPath = path.resolve(searchPath, "node_modules");
   const moduleName = importPath
     .split("/")
     .slice(0, importPath.startsWith("@") ? 2 : 1)
     .join("/");
   const projectPackagePath = path.resolve(searchPath, "package.json");
-  delete require.cache[projectPackagePath];
-  const projectPackage = require(projectPackagePath);
+  const projectPackageText = fs.readFileSync(projectPackagePath);
+  const projectPackage = JSON.parse(projectPackageText);
   const moduleVersion = (projectPackage.dependencies || {})[moduleName];
   const installedModulePath = path.resolve(nodeModulesPath, moduleName);
   const isInstalled = fs.existsSync(installedModulePath);
@@ -22,15 +25,16 @@ module.exports = ({ importPath, searchPath }) => {
         installedModulePath,
         "package.json"
       );
-      delete require.cache[modulePackagePath];
-      const { module, main } = require(modulePackagePath);
+      const modulePackageText = fs.readFileSync(modulePackagePath);
+      const { module, main } = JSON.parse(modulePackageText);
       relativeModulePath = module || main || "";
       resolvedImportPath = path.resolve(
         installedModulePath,
         relativeModulePath
       );
+      // eslint-disable-next-line no-unused-vars
     } catch (e) {
-      // not installed
+      // could not resolve
     }
   } else {
     resolvedImportPath = require.resolve(importPath, {

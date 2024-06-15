@@ -1,8 +1,12 @@
-const path = require("path");
+import path from "path";
+import { fileURLToPath } from "url";
+import rewriteImportsAndExports from "./rewriteImportsAndExports.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const fakeProjectPath = path.join(__dirname, "fake-project");
 
-const rewriteImportsAndExports = require("../../src/server/rewriteImportsAndExports");
 export default {
   rewriteImportsAndExports: {
     "should be a function": [typeof rewriteImportsAndExports, "function"],

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   ".htm": "text/html",
   ".html": "text/html",
   ".js": "application/javascript",

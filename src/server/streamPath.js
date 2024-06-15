@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
-const stream = require("stream");
-const getImportInfo = require("./getImportInfo");
-const rewriteImportsAndExports = require("./rewriteImportsAndExports");
-const normalizePath = require("../normalizePath");
-const mimeLookup = require("./mimeLookup");
+import fs from "fs";
+import path from "path";
+import stream from "stream";
+import getImportInfo from "./getImportInfo.js";
+import rewriteImportsAndExports from "./rewriteImportsAndExports.js";
+import normalizePath from "../normalizePath.js";
+import mimeLookup from "./mimeLookup.js";
 const NODE_MODULES_REGEX = /^\/node_modules\//;
 
 const rewrite = (rewritter = chunk => chunk) =>
@@ -57,7 +57,7 @@ const streamModule = ({ importPath, searchPath, resolve, reject }) => {
   });
 };
 
-module.exports = ({ filePath, searchPath = "", relativeImportPath = "" }) =>
+export default ({ filePath, searchPath = "", relativeImportPath = "" }) =>
   new Promise((resolve, reject) => {
     if (NODE_MODULES_REGEX.test(filePath)) {
       const importPath = filePath.replace(NODE_MODULES_REGEX, "");

@@ -1,9 +1,12 @@
-const http = require("http");
-const path = require("path");
-const fs = require("fs");
-const { withRed, withGreen } = require("../colors");
-const normalizePath = require("../normalizePath");
-const streamPath = require("./streamPath");
+import http from "http";
+import path from "path";
+import fs from "fs";
+import { createRequire } from "node:module";
+import { withRed, withGreen } from "../colors.js";
+import normalizePath from "../normalizePath.js";
+import streamPath from "./streamPath.js";
+
+const require = createRequire(import.meta.url);
 
 const INDEX_HTML_FILE = "index.html";
 
@@ -39,11 +42,7 @@ const HOT_SCRIPT = `
 }
 </script>`;
 
-module.exports = ({
-  port = 8080,
-  docRoot = "public",
-  scriptRoot = "src"
-} = {}) =>
+export default ({ port = 8080, docRoot = "public", scriptRoot = "src" } = {}) =>
   new Promise(resolve => {
     const rootPath = process.cwd();
     const scriptPath = fs.existsSync(path.resolve(rootPath, scriptRoot))
