@@ -37,7 +37,7 @@ export default {
                 "no-version"
               )
             }),
-            `import { app, h } from "https://unpkg.com/fake-package?module"`
+            `import { app, h } from "https://esm.sh/fake-package"`
           ],
           "with version should rewrite to unpkg with version": [
             rewriteImportsAndExports({
@@ -48,7 +48,7 @@ export default {
                 "with-version"
               )
             }),
-            `import { app, h } from "https://unpkg.com/fake-package@1.0.0?module"`
+            `import { app, h } from "https://esm.sh/fake-package@1.0.0"`
           ],
           "should rewrite org packages to unpkg": [
             rewriteImportsAndExports({
@@ -59,7 +59,7 @@ export default {
                 "no-version"
               )
             }),
-            `import { app, h } from "https://unpkg.com/@fake/package?module"`
+            `import { app, h } from "https://esm.sh/@fake/package"`
           ]
         },
         installed: {
@@ -68,35 +68,35 @@ export default {
               contents: `import { app, h } from "fake-package"`,
               searchPath: path.join(fakeProjectPath, "installed")
             }),
-            `import { app, h } from "/node_modules/fake-package"`
+            `import { app, h } from "/node_modules/fake-package";`
           ],
           "should rewrite org packages to local node_modules": [
             rewriteImportsAndExports({
               contents: `import { app, h } from "@fake/package"`,
               searchPath: path.join(fakeProjectPath, "installed")
             }),
-            `import { app, h } from "/node_modules/@fake/package"`
+            `import { app, h } from "/node_modules/@fake/package";`
           ],
           "subfolder should rewrite to local node_modules": [
             rewriteImportsAndExports({
               contents: `import { stuff } from "fake-package/subfolder"`,
               searchPath: path.join(fakeProjectPath, "installed")
             }),
-            `import { stuff } from "/node_modules/fake-package/subfolder"`
+            `import { stuff } from "/node_modules/fake-package/subfolder";`
           ],
           "module should rewrite to local node_modules": [
             rewriteImportsAndExports({
               contents: `import something from "module-package"`,
               searchPath: path.join(fakeProjectPath, "installed")
             }),
-            `import something from "/node_modules/module-package/some/path/module.js"`
+            `import something from "/node_modules/module-package/some/path/module.js";`
           ],
           "main should rewrite to local node_modules": [
             rewriteImportsAndExports({
               contents: `import something from "main-package"`,
               searchPath: path.join(fakeProjectPath, "installed")
             }),
-            `import something from "/node_modules/main-package/other/path/main.js"`
+            `import something from "/node_modules/main-package/other/path/main.js";`
           ]
         }
       }

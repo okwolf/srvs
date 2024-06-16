@@ -1,8 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
 
 export default ({ importPath, searchPath }) => {
   const nodeModulesPath = path.resolve(searchPath, "node_modules");
@@ -19,27 +16,18 @@ export default ({ importPath, searchPath }) => {
   let relativeModulePath = "";
   let resolvedImportPath;
 
-  if (moduleName === importPath) {
-    try {
-      const modulePackagePath = path.resolve(
-        installedModulePath,
-        "package.json"
-      );
+  let currentModulePath = path.resolve(nodeModulesPath, importPath);
+  while (currentModulePath?.length > 1) {
+    const modulePackagePath = path.resolve(currentModulePath, "package.json");
+    if (fs.existsSync(modulePackagePath)) {
       const modulePackageText = fs.readFileSync(modulePackagePath);
       const { module, main } = JSON.parse(modulePackageText);
       relativeModulePath = module || main || "";
-      resolvedImportPath = path.resolve(
-        installedModulePath,
-        relativeModulePath
-      );
-      // eslint-disable-next-line no-unused-vars
-    } catch (e) {
-      // could not resolve
+      resolvedImportPath = path.resolve(currentModulePath, relativeModulePath);
+      currentModulePath = null;
+    } else {
+      currentModulePath = path.resolve(currentModulePath, "..");
     }
-  } else {
-    resolvedImportPath = require.resolve(importPath, {
-      paths: [nodeModulesPath]
-    });
   }
 
   return {
