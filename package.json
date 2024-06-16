@@ -13,7 +13,7 @@
   "devDependencies": {
     "eslint": "=9.5.0",
     "prettier": "=3.3.2",
-    "tead": "=0.7.0"
+    "tead": "=0.7.1"
   },
   "scripts": {
     "clean": "npx --yes --quiet rimraf coverage node_modules",
@@ -21,6 +21,7 @@
     "format:check": "prettier --list-different \"**/*.{js,css,html}\"",
     "lint": "eslint",
     "test": "tead --coverage",
+    "test:watch": "tead --watch",
     "start": "node examples/start",
     "check": "npm run format:check && npm run lint && npm t",
     "release:dry": "npm run clean && npm i && npm run check",
