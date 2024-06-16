@@ -4,6 +4,7 @@ import path from "path";
 export default ({ importPath, searchPath }) => {
   const nodeModulesPath = path.resolve(searchPath, "node_modules");
   const moduleName = importPath
+    .split("?")[0]
     .split("/")
     .slice(0, importPath.startsWith("@") ? 2 : 1)
     .join("/");

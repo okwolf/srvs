@@ -1,10 +1,5 @@
-import { app, text } from "hyperapp";
-import H1 from "./components/H1";
+import { app } from "hyperapp";
+import view from "./view";
+import * as counter from "./counter";
 
-const state = {
-  message: "hello world"
-};
-
-const view = ({ message }) => H1({}, text(message));
-
-app({ init: state, view, node: document.getElementById("app") });
+app({ init: { ...counter.state }, view, node: document.getElementById("app") });

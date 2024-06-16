@@ -1,4 +1,4 @@
 export default {
-  down: value => state => ({ count: state.count - value }),
-  up: value => state => ({ count: state.count + value })
+  down: (state, value) => ({ count: state.count - value }),
+  up: (state, value) => ({ count: state.count + value })
 };

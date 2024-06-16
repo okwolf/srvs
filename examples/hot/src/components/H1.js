@@ -1,3 +1,4 @@
-import { h } from "hyperapp";
+import html from "../html";
+const { h1 } = html;
 
-export default h.bind(null, "h1");
+export default h1;
