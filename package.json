@@ -19,7 +19,7 @@
     "clean": "npx --yes --quiet rimraf coverage node_modules",
     "format": "prettier --write \"**/*.{js,css,html}\"",
     "format:check": "prettier --list-different \"**/*.{js,css,html}\"",
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint",
     "test": "tead --coverage",
     "start": "node examples/start",
     "check": "npm run format:check && npm run lint && npm t",

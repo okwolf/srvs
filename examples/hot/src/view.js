@@ -1,8 +1,11 @@
-import { h } from "hyperapp";
+import H1 from "./components/H1";
+import actions from "./actions";
+import html from "./html";
+const { div, button } = html;
 
-export default (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
-  ]);
+export default state =>
+  div(
+    H1(state.count),
+    button({ onclick: [actions.down, 1] }, "-"),
+    button({ onclick: [actions.up, 1] }, "+")
+  );

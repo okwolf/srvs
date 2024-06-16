@@ -16,27 +16,15 @@ const HOT_DEBOUNCE = 10;
 const getInjectedScript = () => `
 <script type="module">
 {
-  const hotHandlers = [];
-  window.module = window.module || {};
-  window.module.hot = {
-    accept(dependencies, handler) {
-      const filter = !dependencies
-        ? () => true
-        : Array.isArray(dependencies)
-          ? name => dependencies.some(dependency => dependency === name)
-          : name => dependencies === name;
-      hotHandlers.push({ filter, handler });
-    }
-  };
   new EventSource("${HOT_ENDPOINT}").onmessage = message => {
-    const matchingHandlers = hotHandlers.filter(({ filter }) =>
-      filter(message.data)
+    const url = message.data;
+    const hotRejected = document.dispatchEvent(
+      new CustomEvent("srvshot", { cancelable: true, detail: url })
     );
-    matchingHandlers.forEach(({ handler }) => handler(message.data));
-    if (matchingHandlers.length) {
-      console.info("hot reloading:", message.data);
-    } else {
+    if (hotRejected) {
       location.reload(true);
+    } else {
+      console.info("hot reloading:", url);
     }
   };
   window.process = {};
@@ -79,6 +67,11 @@ export default ({ port = 8080, docRoot = "public", scriptRoot = "src" } = {}) =>
     }, HOT_KEEPALIVE_INTERVAL);
     fs.watch(scriptPath, { recursive: true }, notifyHotClients);
     fs.watch(docPath, { recursive: true }, notifyHotClients);
+    fs.watch(rootPath, { recursive: true }, (_, fileName) => {
+      if (fileName.startsWith("node_modules/")) {
+        notifyHotClients(null, fileName);
+      }
+    });
     http
       .createServer((request, response) => {
         if (request.url === HOT_ENDPOINT) {
@@ -114,6 +107,7 @@ export default ({ port = 8080, docRoot = "public", scriptRoot = "src" } = {}) =>
           .catch(() =>
             resolveNodePath().then(nodeResolvedPath =>
               streamPath({
+                originalUrl: resolvedUrl,
                 filePath: nodeResolvedPath,
                 searchPath: rootPath,
                 relativeImportPath: scriptPath

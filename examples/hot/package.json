@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "hyperapp": "=1.2.8",
-    "hyperapp-moisturize": "=0.1.2"
+    "hyperapp": "=2.0.22"
   },
   "scripts": {
     "prestart": "npm i",
