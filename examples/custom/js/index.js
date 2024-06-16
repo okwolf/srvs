@@ -1,12 +1,17 @@
-import { React, ReactDOM } from "es-react";
+import { createElement, render } from "preact";
+import { useState } from "preact/hooks";
 import htm from "htm";
-const html = htm.bind(React.createElement);
+const html = htm.bind(createElement);
 
-ReactDOM.render(
-  html`
-    <main>
-      <h1>Hello from es-react</h1>
-    </main>
-  `,
-  document.body
-);
+const Counter = () => {
+  const [count, setCount] = useState(0);
+  return html`
+    <div>
+      <p>Count: ${count}</p>
+      <button onClick=${() => setCount(count + 1)}>Increment</button>
+      <button onClick=${() => setCount(count - 1)}>Decrement</button>
+    </div>
+  `;
+};
+
+render(html`<${Counter} />`, document.body);

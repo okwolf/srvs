@@ -2,8 +2,8 @@ import path from "path";
 import getImportInfo from "./getImportInfo.js";
 import normalizePath from "../normalizePath.js";
 
-const ES6_IMPORT_REGEX = /(import[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
-const ES6_EXPORT_REGEX = /(export[\s\S]+?from)\s+?['"]([^"']+)["']?;?/g;
+const ES6_IMPORT_REGEX = /(import[\s\S]*?from)\s*?['"]([^"']+)["']?;?/g;
+const ES6_EXPORT_REGEX = /(export[\s\S]*?from)\s*?['"]([^"']+)["']?;?/g;
 
 export default ({ contents = "", searchPath = "", importContext = "" }) =>
   contents
@@ -20,11 +20,11 @@ export default ({ contents = "", searchPath = "", importContext = "" }) =>
         const moduleImportPath = normalizePath(
           path.join("/node_modules", module, relativeModulePath)
         );
-        return `${imports} "${moduleImportPath}"`;
+        return `${imports} "${moduleImportPath}";`;
       }
-      return `${imports} "https://unpkg.com/${moduleName}${
+      return `${imports} "https://esm.sh/${moduleName}${
         moduleVersion ? `@${moduleVersion}` : ""
-      }?module"`;
+      }${module.substring(moduleName.length)}"`;
     })
     .replace(ES6_EXPORT_REGEX, (_, exports, module) => {
       const resolvedRelativeImport =
