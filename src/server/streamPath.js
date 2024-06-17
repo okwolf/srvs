@@ -34,6 +34,11 @@ const getImportMetaHotHeader = filePath => `
     };
     const disposeListener = e => {
       if (e.detail.path === "${filePath}") {
+        document.dispatchEvent(
+          new CustomEvent("srvsdisposedata", {
+            detail: { path: "${filePath}", data: import.meta.hot.data }
+          })
+        );
         document.removeEventListener("srvshot", listener);
         document.removeEventListener("srvsdispose", disposeListener);
       }
@@ -45,11 +50,6 @@ const getImportMetaHotHeader = filePath => `
     const disposeListener = e => {
       if (e.detail.path === "${filePath}") {
         handler();
-        document.dispatchEvent(
-          new CustomEvent("srvsdisposedata", {
-            detail: { path: "${filePath}", data: import.meta.hot.data }
-          })
-        );
         document.removeEventListener("srvsdispose", disposeListener);
       }
     };
