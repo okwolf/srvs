@@ -1,6 +1,6 @@
 {
   "name": "srvs",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Zero dependency dev server",
   "files": [
     "src"
@@ -19,7 +19,7 @@
     "clean": "npx --yes --quiet rimraf coverage node_modules",
     "format": "prettier --write \"**/*.{js,css,html}\"",
     "format:check": "prettier --list-different \"**/*.{js,css,html}\"",
-    "lint": "eslint",
+    "lint": "eslint .",
     "test": "tead --coverage",
     "test:watch": "tead --watch",
     "start": "node examples/start",
