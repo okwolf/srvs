@@ -1,5 +1,5 @@
-import { createElement, render } from "preact";
-import { useState } from "preact/hooks";
+import { createElement, useState } from "react";
+import { createRoot } from "react-dom/client";
 import htm from "htm";
 const html = htm.bind(createElement);
 
@@ -14,4 +14,5 @@ const Counter = () => {
   `;
 };
 
-render(html`<${Counter} />`, document.body);
+const root = createRoot(document.getElementById("app"));
+root.render(html`<${Counter} />`);
