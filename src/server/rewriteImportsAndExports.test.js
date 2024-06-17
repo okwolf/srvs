@@ -109,6 +109,13 @@ export default {
             }),
             `import { stuff } from "/node_modules/fake-package/subfolder";`
           ],
+          "subfile should rewrite to local node_modules": [
+            rewriteImportsAndExports({
+              contents: `import { stuff } from "fake-package/subfolder/index.js"`,
+              searchPath: path.join(fakeProjectPath, "installed")
+            }),
+            `import { stuff } from "/node_modules/fake-package/subfolder/index.js";`
+          ],
           "module should rewrite to local node_modules": [
             rewriteImportsAndExports({
               contents: `import something from "module-package"`,

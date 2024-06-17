@@ -1,0 +1,12 @@
+{
+  "name": "srvs-example",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ../../src"
+  },
+  "dependencies": {
+    "hyperapp": "=2.0.22",
+    "hyperapp-fx": "=2.0.0-beta.2"
+  }
+}

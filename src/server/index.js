@@ -103,7 +103,11 @@ export default ({ port = 8080, docRoot = "public", scriptRoot = "src" } = {}) =>
             }
           });
 
-        streamPath({ filePath: resolvedUrl, searchPath: rootPath })
+        streamPath({
+          originalUrl: resolvedUrl,
+          filePath: resolvedUrl,
+          searchPath: rootPath
+        })
           .catch(() =>
             resolveNodePath().then(nodeResolvedPath =>
               streamPath({
@@ -115,7 +119,10 @@ export default ({ port = 8080, docRoot = "public", scriptRoot = "src" } = {}) =>
             )
           )
           .catch(() =>
-            streamPath({ filePath: path.resolve(docPath, INDEX_HTML_FILE) })
+            streamPath({
+              originalUrl: resolvedUrl,
+              filePath: path.resolve(docPath, INDEX_HTML_FILE)
+            })
           )
           .then(({ fileStream, mime }) => {
             if (mime) {
