@@ -17,17 +17,28 @@ export default ({ importPath, searchPath }) => {
   let relativeModulePath = "";
   let resolvedImportPath;
 
-  let currentModulePath = path.resolve(nodeModulesPath, importPath);
-  while (currentModulePath?.length > 1) {
-    const modulePackagePath = path.resolve(currentModulePath, "package.json");
-    if (fs.existsSync(modulePackagePath)) {
-      const modulePackageText = fs.readFileSync(modulePackagePath);
-      const { module, main } = JSON.parse(modulePackageText);
-      relativeModulePath = module || main || "";
-      resolvedImportPath = path.resolve(currentModulePath, relativeModulePath);
-      currentModulePath = null;
-    } else {
-      currentModulePath = path.resolve(currentModulePath, "..");
+  const absoluteImportPath = path.resolve(nodeModulesPath, importPath);
+  if (
+    fs.existsSync(absoluteImportPath) &&
+    fs.statSync(absoluteImportPath).isFile()
+  ) {
+    resolvedImportPath = absoluteImportPath;
+  } else {
+    let currentModulePath = path.resolve(nodeModulesPath, importPath);
+    while (currentModulePath?.length > 1) {
+      const modulePackagePath = path.resolve(currentModulePath, "package.json");
+      if (fs.existsSync(modulePackagePath)) {
+        const modulePackageText = fs.readFileSync(modulePackagePath);
+        const { module, main } = JSON.parse(modulePackageText);
+        relativeModulePath = module || main || "";
+        resolvedImportPath = path.resolve(
+          currentModulePath,
+          relativeModulePath
+        );
+        currentModulePath = null;
+      } else {
+        currentModulePath = path.resolve(currentModulePath, "..");
+      }
     }
   }
 

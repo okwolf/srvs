@@ -1,0 +1,123 @@
+html,
+body {
+  color: white;
+  background-color: #111;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4vw;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.container {
+  margin-bottom: 4vw;
+}
+
+.top {
+  position: absolute;
+  top: 0;
+}
+
+.control-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1vw 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 100;
+}
+
+h1 {
+  font-size: 20vw;
+  margin: 4vw 0;
+}
+
+h2 {
+  font-size: 10vw;
+  margin: 2vw 0;
+}
+
+h3 {
+  font-size: 4vw;
+  margin: 1vw 0;
+}
+
+a {
+  display: block;
+  font-size: 2vw;
+  margin: 1.5vw;
+  text-decoration: none;
+  color: #00caff;
+}
+
+input {
+  font-size: 4vw;
+}
+
+button {
+  cursor: pointer;
+  background: transparent;
+  border-radius: 0;
+  border: 0.15vw solid #00caff;
+  color: #00caff;
+  font-size: 4vw;
+  font-weight: 100;
+  margin: 0;
+  outline: none;
+  padding: 0 3vw;
+  transition: background 0.3s;
+}
+button + button {
+  margin-left: 1vw;
+}
+
+button:hover,
+button:active {
+  background: #00caff;
+  color: #111;
+}
+button:active {
+  outline: 0.3vw solid #00caff;
+}
+button:disabled {
+  cursor: not-allowed;
+  background: lightgray;
+  color: #111;
+}
+
+.increased {
+  color: #00b909;
+}
+
+.decreased {
+  color: #c60606;
+}
+
+svg {
+  overflow: visible;
+  position: absolute;
+  left: 50vw;
+  top: 50vh;
+  width: 50vw;
+  height: 50vh;
+}

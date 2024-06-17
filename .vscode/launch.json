@@ -47,6 +47,16 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "FX example",
+      "program": "${workspaceFolder}/src/index.js",
+      "cwd": "${workspaceFolder}/examples/fx",
+      "args": [],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Tests",
       "program": "${workspaceFolder}/node_modules/tead/src/tead.js",
       "args": ["--watch"],
